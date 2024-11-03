@@ -676,7 +676,7 @@
                     </tr>
                     <tr>
                         <th>닉네임</th>
-                        <td><input type="text" id="nickName" name="nickName" placeholder="홍길동"/></td>
+                        <td><input type="text" id="nickName" name="nickName" placeholder="홍길동"/><span id="nickNameChecker" style="color: red;"></span></td>
                     </tr>
                 </table>
                 <div class="join-btn">
@@ -765,11 +765,13 @@
                 })
                 
             });
-            
+
             // 이메일 인증 버튼
             document.querySelector("#usernameCheckBtn").addEventListener('click', function(e) {
                 const usernameDoc = document.querySelector("#username");
+                const usernameCheckBtn = document.querySelector("#usernameCheckBtn");
                 const username = usernameDoc.value;
+
                 if(!emailValidCheck(username)) {
                     alert('올바른 이메일 형식이 아닙니다.');
                     usernameDoc.value = '';
@@ -782,6 +784,7 @@
                 }
 
                 usernameDoc.disabled = true;
+                usernameCheckBtn.disabled = true;
 
                 fetch('/send/email', {
                     method: 'POST',
@@ -800,6 +803,7 @@
                 })
                 .catch(err => {
                     usernameDoc.disabled = false;
+                    usernameCheckBtn.disabled = false;  // 실패 시 버튼 활성화
                     console.error(err);
                 })
             })
@@ -846,6 +850,42 @@
                 .catch(err => {
                     console.error(err);
                 })
+            })
+            
+            document.querySelector("#nickName").addEventListener('keyup', function(e) {
+                const nickNameDoc = document.querySelector("#nickName");
+                const nickName = nickNameDoc.value;
+                const nickNameChecker = document.querySelector("#nickNameChecker");
+
+                console.log(nickName);
+                if(nickName.length > 1) {
+
+                    if(nickName.length > 10) {
+                        nickNameChecker.innerText = '닉네임은 2자 이상 10자 이하로 입력해주세요.';
+                        return;
+                    }
+
+                    fetch(`/verify/nickName?nickName=${nickName}`, {
+                        method: 'GET',
+                        headers: {
+                            'Content-Type': 'application/json'
+                        },
+                    })
+                    .then(res => {
+                        if(res.ok) {
+                            return res.json();
+                        }
+                        throw new Error('닉네임 중복 확인 실패');
+                    })
+                    .then(data => {
+                        if(data) {
+                            nickNameChecker.innerText = '이미 사용중인 닉네임입니다.';
+                        } else {
+                            nickNameChecker.innerText = '';
+                        }
+                    })
+
+                }
             })
         }
         
