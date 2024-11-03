@@ -29,7 +29,7 @@ public class CustomLoginSuccessHandler extends SimpleUrlAuthenticationSuccessHan
         log.debug("authentication.getPrincipal() => {}", authentication.getPrincipal());
 
         CustomUserDetails userDetails = (CustomUserDetails) authentication.getPrincipal();
-        User user = userDetails.getUsername();
+        User user = userDetails.getUser();
 
         // 여기에서 유저에 대한 작업을 진행한다.
 
