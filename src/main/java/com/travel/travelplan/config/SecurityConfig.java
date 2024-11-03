@@ -11,53 +11,43 @@ import org.springframework.security.web.SecurityFilterChain;
 @Configuration
 @EnableWebSecurity
 public class SecurityConfig {
-    
 
     @Bean
-    public BCryptPasswordEncoder bCryptPasswordEncoder() { //암호화 메소드 구현
-
+    BCryptPasswordEncoder bCryptPasswordEncoder() { // 암호화 메소드 구현
         return new BCryptPasswordEncoder();
     }
 
     @Bean
-    public SecurityFilterChain filterChain(HttpSecurity http) throws Exception{
+    SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
         http
-          .authorizeHttpRequests((auth) -> auth
+            .authorizeHttpRequests((auth) -> auth
                 .requestMatchers("/css/**", "/js/**", "/img/**").permitAll()
-                  .requestMatchers("/", "/login", "/loginProc", "/join", "/joinProc").permitAll()
-                  .requestMatchers(HttpMethod.GET, "/api/v1/board/**").permitAll()
-                  .requestMatchers("/admin/**").permitAll()//.hasRole("ADMIN")
-                  .requestMatchers("/my/**").hasAnyRole("ADMIN", "USER")
-                  .anyRequest().authenticated()
-          );
+                .requestMatchers("/", "/login", "/loginProc", "/join", "/joinProc").permitAll()
+                .requestMatchers(HttpMethod.GET, "/api/v1/board/**").permitAll()
+                .requestMatchers("/admin/**").permitAll()// .hasRole("ADMIN")
+                .requestMatchers("/my/**").hasAnyRole("ADMIN", "USER")
+                .anyRequest().authenticated());
 
         http
-                .formLogin((auth) -> auth.loginPage("/login")
-                        .successHandler(new CustomLoginSuccessHandler())
-                        .permitAll()
-                )
-                .logout((auth) -> auth.logoutUrl("/logout")
-                        .logoutSuccessUrl("/login?logout=logout")              // 로그아웃 성공시 이동할 페이지
-                        .invalidateHttpSession(true)    // 세션 무효화
-                        .deleteCookies("JSESSIONID")    // 쿠키 삭제
-                        .permitAll()
-                );
+            .formLogin((auth) -> auth.loginPage("/login")
+                .successHandler(new CustomLoginSuccessHandler())
+                .permitAll())
 
-                
+            .logout((auth) -> auth.logoutUrl("/logout")
+                .logoutSuccessUrl("/login?logout=logout") // 로그아웃 성공시 이동할 페이지
+                .invalidateHttpSession(true) // 세션 무효화
+                .deleteCookies("JSESSIONID") // 쿠키 삭제
+                .permitAll());
+
         http
-               .csrf((auth) -> auth.disable());
-
-
-
+            .csrf((auth) -> auth.disable());
 
         http
             .logout((auth) -> auth.logoutUrl("/logout")
-                    .logoutSuccessUrl("/"));
+                .logoutSuccessUrl("/"));
 
         return http.build();
 
     }
 
-        
-    
 }
