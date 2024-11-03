@@ -10,7 +10,7 @@ import com.travel.travelplan.entity.User;
 import com.travel.travelplan.repository.UserRepository;
 
 @Service
-public class CustomUserDetailService implements UserDetailsService{
+public class CustomUserDetailService implements UserDetailsService {
 
     private final UserRepository userRepository;
 
@@ -22,11 +22,10 @@ public class CustomUserDetailService implements UserDetailsService{
     @Override
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
 
-        User userData = userRepository.findByUsername(username);
+        User userData = userRepository.findByUsername(username)
+                .filter(User::getLoginYn) // 이메일 인증 및 회원가입을 완료한 사용자만 로그인 가능
+                .orElseThrow(() -> new UsernameNotFoundException("사용자를 찾을 수 없습니다."));
 
-        if (userData != null){
-            return new CustomUserDetails(userData);
-        }
-        return null;
+        return new CustomUserDetails(userData);
     }
 }

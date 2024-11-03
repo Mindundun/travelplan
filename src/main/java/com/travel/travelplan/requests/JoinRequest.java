@@ -1,23 +1,23 @@
-package com.travel.travelplan.dto;
+package com.travel.travelplan.requests;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 
+import jakarta.validation.constraints.NotBlank;
 import lombok.Getter;
 import lombok.Setter;
 
 @Setter
 @Getter
 @JsonIgnoreProperties(ignoreUnknown=true)
-public class JoinDTO {
+public class JoinRequest {
 
-    private String id;
-    
-    private String brithdate;
+    @NotBlank
     private String username;
+
+    @NotBlank
     private String password;
 
-    private String acount;
-    private String acount_pwd;
-    private String role;
+    @NotBlank
+    private String nickName;
 
 }

@@ -22,7 +22,8 @@ public class SecurityConfig {
         http
             .authorizeHttpRequests((auth) -> auth
                 .requestMatchers("/css/**", "/js/**", "/img/**").permitAll()
-                .requestMatchers("/", "/login", "/loginProc", "/join", "/joinProc").permitAll()
+                .requestMatchers("/", "/login", "/loginProc", "/join").permitAll()
+                .requestMatchers("/send/email", "/verify/email").permitAll()
                 .requestMatchers(HttpMethod.GET, "/api/v1/board/**").permitAll()
                 .requestMatchers("/admin/**").permitAll()// .hasRole("ADMIN")
                 .requestMatchers("/my/**").hasAnyRole("ADMIN", "USER")
