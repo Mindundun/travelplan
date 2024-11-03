@@ -30,7 +30,6 @@ public class JoinController {
 
         joinService.joinProcess(joinDTO);
 
-        System.out.println("민둔민둔");
 
         return "redirect:/login"; // 완료 후 
     }
