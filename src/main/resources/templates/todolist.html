@@ -1,59 +1,137 @@
 <!DOCTYPE html>
-<html xmlns:th="http://www.thymeleaf.org">
+<html lang="ko" xmlns:th="http://www.thymeleaf.org">
 <head> 
-    <title>Your Todos</title>
-    <link rel="stylesheet" href="/css/styles.css"> <!-- 실제 경로로 수정 -->
-    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>패스트립 :: 일정 관리</title>
+    <!-- <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css"> -->
+    <!-- css -->
+	<link rel="icon" th:href="@{/img/favicon-01.png}">
+	<link rel="stylesheet" th:href="@{/css/common/reset.css}">
+	<link rel="stylesheet" th:href="@{/css/common/all.min.css}">
+	<link rel="stylesheet" th:href="@{/css/common/fonts.css}">
+	<link rel="stylesheet" th:href="@{/css/header-footer.css}">
+	<link rel="stylesheet" th:href="@{/css/todolist.css}">
+	<link href="https://unpkg.com/aos@2.3.1/dist/aos.css" rel="stylesheet">
+	<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined" rel="stylesheet">
+	<!-- js -->
+	<script src="https://unpkg.com/aos@2.3.1/dist/aos.js"></script>
+    <script src="/js/header.js"></script>
 </head>
 <body>
     <!-- Header 포함 -->
-    <header>
-        <nav class="navbar navbar-expand-lg navbar-light bg-light">
-            <a class="navbar-brand" href="#">Your Application</a>
-            <div class="collapse navbar-collapse">
-                <ul class="navbar-nav mr-auto">
-                    <li class="nav-item">
-                        <a class="nav-link" href="/list-todos">List Todos</a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link" href="/add-todo">Add Todo</a>
-                    </li>
-                </ul>
+    <div id="wrap">
+        <header class="black">
+            <div id="header-box">
+                <h1 class="logo"><a href="/"><img src="/img/logo_white.png" alt="패스뱅크"></a></h1>
+                <div class="nav">
+                    <ul>
+                        <li class="main-menu"><a href="#">MY</a>
+                            <ul class="sub-nav">
+                                <li class="sub-menu"><a href="/account">마이페이지</a></li>
+                                <li class="sub-menu"><a href="/account">즐겨찾기</a></li>
+                                <li class="sub-menu"><a href="/account">팔로워</a></li>
+                            </ul>
+                        </li>
+                        <li class="main-menu"><a href="#">일정</a>
+                            <ul class="sub-nav">
+                                <li class="sub-menu"><a href="/todolist">일정 관리</a></li>
+                                <li class="sub-menu"><a href="#">공유된 일정</a></li>
+                            </ul>
+                        </li>
+                        <li class="main-menu"><a href="#">공항 및 숙소</a>
+                            <ul class="sub-nav">
+                                <li class="sub-menu"><a href="#">계좌이체</a></li>
+                                <li class="sub-menu"><a href="#">증권이체</a></li>
+                            </ul>
+                        </li>
+                        <li class="main-menu"><a href="#">커뮤니티</a>
+                            <ul class="sub-nav">
+                                <li class="sub-menu"><a href="#">증권 구매</a></li>
+                                <li class="sub-menu"><a href="#">증권 판매</a></li>
+                            </ul>
+                        </li>
+                    </ul>
+                    <div id="box-bg">
+                    </div>
+                </div>
+                <div class="top-nav">
+                    <span class="top-btn"><a href="/admin">관리자</a></span>
+                    <th:block th:if="${session.user == null}">
+                        <span class="top-btn"><a href="/login">로그인</a></span>
+                    </th:block>
+                    <th:block th:if="${session.user != null}">
+                        <span class="top-btn"><a href="/logout">로그아웃</a></span>
+                    </th:block>
+                </div>
             </div>
-        </nav>
-    </header>
-
-    <div class="container">
-        <h1>Your Todos</h1>
-        <table class="table">
-            <thead>
-                <tr>
-                    <th>Description</th>
-                    <th>Target Date</th>
-                    <th>Is Done?</th>
-                    <th>Actions</th>
-                </tr>
-            </thead>
-            <tbody>
-                <tr th:each="todo : ${todos}">
-                    <td th:text="${todo.description}"></td>
-                    <td th:text="${#dates.format(todo.targetDate, 'yyyy-MM-dd')}"></td>
-                    <td th:text="${todo.done ? 'Yes' : 'No'}"></td>
-                    <td>
-                        <a th:href="@{/delete-todo(id=${todo.id})}" class="btn btn-warning">Delete</a>
-                        <a th:href="@{/update-todo(id=${todo.id})}" class="btn btn-success">Update</a>
-                    </td>
-                </tr>
-            </tbody>
-        </table>
-        <p>by. Mindun</p>
-        <a href="/add-todo" class="btn btn-success">Add Todo</a>
+        </header>
+        <main class="main">
+            <table class="table">
+                <thead>
+                    <tr>
+                        <th>설명</th>
+                        <th>게시일</th>
+                        <th>체크박스</th>
+                        <th>완료/미완성</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr th:each="todo : ${todos}">
+                        <td th:text="${todo.description}"></td>
+                        <td th:text="${#dates.format(todo.targetDate, 'yyyy-MM-dd')}"></td>
+                        <td th:text="${todo.done ? 'Yes' : 'No'}"></td>
+                        <td>
+                            <a th:href="@{/delete-todo(id=${todo.id})}" class="btn btn-warning">Delete</a>
+                            <a th:href="@{/update-todo(id=${todo.id})}" class="btn btn-success">Update</a>
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+            <p>by. Mindun</p>
+            <a href="/add-todo" class="btn btn-success">리스트 추가</a>
+        </main>
+        <footer>
+            <div class="f-inner">
+                <div class="f-left">
+                    <address>
+                        <h4>고객센터</h4>
+                        <span>전화 : 1588-1234 (평일 오전9시 ~ 오후 6시)</span>
+                        <span>숙소/티켓문의 : 1588-5678 (24시간 연중무휴)</span>
+                        <span>이메일문의 : japgaja8282@naver.com</span>
+                    </address>
+                    <h4>(주)패스트립</h4>
+                    <article>
+                        <div class="kim">
+                            <h5>Backend : Sung Sig Kim</h5>
+                            <h5>email : tjdtlr12349@gmail.com</h5>
+                            <h5>Git URL : <a href="#">바로가기<span class="material-symbols-outlined">exit_to_app</span></a></h5>
+                        </div>
+                        <div class="park">
+                            <h5>Backend : Min Kyung Park </h5>
+                            <h5>email : 민경@gmail.com</h5>
+                            <h5>Git URL : <a href="#">바로가기<span class="material-symbols-outlined">exit_to_app</span></a></h5>
+                        </div>
+                        <div class="hwang">
+                            <h5>Publisher : Ji Hyun Hwang </h5>
+                            <h5>email : ghkdwlgus000@gmail.com</h5>
+                            <h5>Git URL : <a href="#">바로가기<span class="material-symbols-outlined">exit_to_app</span></a></h5>
+                        </div>
+                    </article>
+                </div>
+                <div class="f-right">
+                    <ul>
+                        <li><a href="#">마이페이지</a></li>
+                        <li><a href="#">상품</a></li>
+                        <li><a href="#">이체</a></li>
+                        <li><a href="#">증권</a></li>
+                    </ul>
+                    <p>© copyright 2024 Example Corp.</p>
+                </div>
+            </div>
+        </footer>
     </div>
 
-    <footer>
-        <div class="container">
-            <p>&copy; 2024 Your Application. All rights reserved.</p>
-        </div>
-    </footer>
+    
 </body>
 </html>
