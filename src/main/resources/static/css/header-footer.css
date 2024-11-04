@@ -4,25 +4,26 @@
 
 
 /* 헤더 메뉴 */
-header {width: 100%; height: 80px; padding: 20px; color: #fff; background: rgba(255,255,255,0.1); position: fixed; z-index: 999; transition: all 0.5s;  backdrop-filter: blur(5px); }
-#header-box {max-width: 1200px; height: 100%; margin: 0 auto;  display: flex; justify-content: space-between;  }
+header {width: 100%; height: 80px;  padding: 20px; color: #333;/*  background: rgba(255,255,255,0.1);  */position: fixed; z-index: 999; transition: all 0.5s;  backdrop-filter: blur(5px); border-bottom: 1px solid #ccc; }
+#header-box {max-width: 1200px; height: 100%; margin: 0 auto;  display: flex; justify-content: space-between; }
 #header-box > h1 {width: 200px;}
-#header-box > h1 > a {display: inline-block; vertical-align: middle;}
+#header-box > h1 > a {display: inline-block; vertical-align: middle; font-size: 0;}
 #box-bg {opacity: 0;transition: 0.3s;display: flex;}
-.nav {width: 100%; text-align: center;}
+.nav {width: 100%; text-align: center; display: flex; padding-top: 10px;}
 .nav > ul {display: flex; justify-content: space-around;}
 .nav  .sub-nav {position: absolute; top: 50px; width: 100%; }
 .sub-nav > .sub-menu {padding: 10px 0; opacity: 0; transition: all 0.3s; font-size: 16px; }
 .main-menu {width: 150px; position: relative; font-size: 18px; font-weight: 500;}
 .main-menu > a, .sub-menu > a {display: inline-block; width: 100%; vertical-align: middle;}
-header:hover{height: 250px; background: rgba(0, 0, 0, 0.7);}
-header:hover .sub-menu {opacity: 1; transition: all 0.3s;}
+header:hover{height: 250px; background: rgba(0, 0, 0, 0.7); color: #fefefe;}
+header:hover  h1 {filter:invert(100%);}
+header:hover .sub-menu {opacity: 1; transition: all 0.3s; color: #fefefe;}
 .sub-menu:hover {color: #26A7E2;}
-header.black {background: rgba(0, 0, 0, 0.7);}
+header.black {background: rgba(0, 0, 0, 0.3);}
 
 /* 관리자 및 로그인 */
-.top-nav {height: 30px;  display: flex;  gap: 10px; align-items: top; font-size: 14px; text-align: center;}
-.top-btn {width: 100px; display: flex; align-items: center; justify-content: center; background: #146CEF;  border-radius: 50px;}
+.top-nav {height: 30px;  display: flex;  gap: 10px; align-items: top; font-size: 14px; text-align: center; color: #fefefe;}
+.top-btn {width: 100px; display: flex; align-items: center; justify-content: center; background: #146CEF;  border-radius: 20px;}
 
 
 /* footer */
