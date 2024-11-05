@@ -88,7 +88,7 @@ public class TodoListController {
     }
 
     @RequestMapping(value = "/todomain", method = RequestMethod.GET)
-    public String showUpdateTodo() {
+    public String todomain() {
         return "todomain";
     }
 }
