@@ -37,20 +37,24 @@ public class MainController {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         
         //UserEntity의 객체를 가져옴
-        CustomUserDetails customuserdetails = (CustomUserDetails) authentication.getPrincipal();
-        User user = customuserdetails.getUser();
+        try {
+            CustomUserDetails customuserdetails = (CustomUserDetails) authentication.getPrincipal();
+            User user = customuserdetails.getUser();
 
-        // User 객체에서 id를 가져옴
-        int userId = user.getId(); // getId() 메서드를 사용하여 ID를 가져옵니다.
-        
-        Collection<? extends GrantedAuthority> authorities = authentication.getAuthorities();
-        Iterator<? extends GrantedAuthority> iter = authorities.iterator();
-        GrantedAuthority auth = iter.next();
-        String role = auth.getAuthority();
+            // User 객체에서 id를 가져옴
+            int userId = user.getId(); // getId() 메서드를 사용하여 ID를 가져옵니다.
+            
+            Collection<? extends GrantedAuthority> authorities = authentication.getAuthorities();
+            Iterator<? extends GrantedAuthority> iter = authorities.iterator();
+            GrantedAuthority auth = iter.next();
+            String role = auth.getAuthority();
 
-        model.addAttribute("id", id );
-        //이 role 값에 따라 분기처리 가능 : admin만 삭제하기 등
-        model.addAttribute("role",role);
+            model.addAttribute("id", id );
+            //이 role 값에 따라 분기처리 가능 : admin만 삭제하기 등
+            model.addAttribute("role",role);
+        } catch (Exception e) {
+            // Null or ClassCastException 뜸니다 수정하셔야 합니다.
+        }
         System.out.println("ID: " + id); // 로그로 ID 확인
 
         return "index";
