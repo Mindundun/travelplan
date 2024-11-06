@@ -86,4 +86,9 @@ public class TodoListController {
     private String getLoggedInUsername(ModelMap model) {
         return (String) model.get("name"); // 로그인한 사용자 이름 반환
     }
+
+    @RequestMapping(value = "/todomain", method = RequestMethod.GET)
+    public String todomain() {
+        return "todomain";
+    }
 }

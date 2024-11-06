@@ -2,20 +2,30 @@ package com.travel.travelplan.controller;
 
 import java.util.Collection;
 import java.util.Iterator;
+import java.util.List;
 
+import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.ResponseBody;
 
+import com.travel.travelplan.components.NaverBlogSearchComponent;
 import com.travel.travelplan.dto.CustomUserDetails;
+import com.travel.travelplan.dto.naver.BlogPost;
 import com.travel.travelplan.entity.User;
 
+import lombok.RequiredArgsConstructor;
+
 @Controller
+@RequiredArgsConstructor
 public class MainController {
     
+    private final NaverBlogSearchComponent naverBlogSearchComponent;
+
     @GetMapping("/")
     public String mainP(Model model){
 
@@ -42,5 +52,17 @@ public class MainController {
 
         return "index";
         // 민경아 인덱스로 바꾸래서 바꿨다 기존:main
+    }
+
+    @GetMapping("/travel-book")
+    @ResponseBody
+    public ResponseEntity<List<BlogPost>> travelBook() {
+        try {
+            List<BlogPost> blogPosts = naverBlogSearchComponent.searchBlog("여행");
+            return ResponseEntity.ok().body(blogPosts);
+        } catch (Exception e) {
+            log.error("Error: {}", e.getMessage());
+            return ResponseEntity.badRequest().build();
+        }
     }
 }

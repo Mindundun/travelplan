@@ -1,5 +1,6 @@
 package com.travel.travelplan.service;
 
+import java.time.LocalDateTime;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 
@@ -42,8 +43,7 @@ public class JoinService {
         }
 
         // 3. 닉네임 중복 검사
-        boolean isNickName = userRepository.existsByNickName(nickName);
-        if(isNickName){
+        if(userRepository.existsByNickName(nickName)){
             throw new IllegalArgumentException("이미 사용중인 닉네임입니다.");
         }
 
@@ -55,9 +55,10 @@ public class JoinService {
         }
 
         // 5. 유저 저장
-        user.setPassword(bCryptPasswordEncoder.encode(joinRequest.getPassword()));
-        user.setNickName(joinRequest.getNickName());
+        user.setPassword(bCryptPasswordEncoder.encode(password));
+        user.setNickName(nickName);
         user.setLoginYn(true);
+        user.setLoginYnDate(LocalDateTime.now());
         userRepository.save(user);
     }
 
@@ -77,12 +78,19 @@ public class JoinService {
                 .collect(Collectors.joining());
 
         // 인증키 저장
-        User user = new User();
-        user.setUsername(email);
-        user.setVerifyKey(randomKey);
-        user.setRole("ROLE_USER");
-
-        userRepository.save(user);
+        userRepository.findByUsername(email).ifPresentOrElse( // 개쩐다..
+                (u) -> {
+                    u.setVerifyKey(randomKey);
+                    userRepository.save(u);
+                },
+                () -> {
+                    User newUser = new User();
+                    newUser.setUsername(email);
+                    newUser.setVerifyKey(randomKey);
+                    newUser.setRole("ROLE_USER");
+                    userRepository.save(newUser);
+                }
+        );
 
         // 이메일 전송
         boolean isSent = smtpComponent.mailSend(email, "TravelPlan 회원가입 인증 메일", "인증번호: " + randomKey);
@@ -92,6 +100,7 @@ public class JoinService {
         }
     }
 
+    // 이메일 인증하기
     public void verifyEmail(String email, String key) {
         User user = userRepository.findByUsername(email)
                 .orElseThrow(() -> new IllegalArgumentException("가입되지 않은 이메일입니다."));
@@ -101,12 +110,13 @@ public class JoinService {
         }
 
         user.setIsVerify(true);
+        user.setVerifyDate(LocalDateTime.now());
         userRepository.save(user);
     }
 
-    public Integer nickNameCheck(String nickName) {
-        boolean exist = userRepository.existsByNickName(nickName);
-        return exist ? 1 : 0;
+    // 닉네임 중복 체크
+    public Boolean nickNameCheck(String nickName) {
+        return userRepository.existsByNickName(nickName);
     }
 
 }

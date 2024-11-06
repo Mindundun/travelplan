@@ -3,7 +3,7 @@
 <head> 
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>패스트립 :: 일정 관리</title>
+    <title>패스트립 :: 일정 목록</title>
     <!-- <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css"> -->
     <!-- css -->
 	<link rel="icon" th:href="@{/img/favicon-01.png}">
@@ -12,7 +12,7 @@
 	<link rel="stylesheet" th:href="@{/css/common/fonts.css}">
 	<link rel="stylesheet" th:href="@{/css/header-footer.css}">
 	<link rel="stylesheet" th:href="@{/css/index.css}">
-	<link rel="stylesheet" th:href="@{/css/todolist.css}">
+	<link rel="stylesheet" th:href="@{/css/todomain.css}">
 	<link href="https://unpkg.com/aos@2.3.1/dist/aos.css" rel="stylesheet">
 	<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined" rel="stylesheet">
 	<!-- js -->
@@ -63,50 +63,19 @@
 			</div>
 		</header>
         <main class="main">
-            <table class="table">
-                    <tr>
-                        <th>일정명</th>
-                        <td>제주도 3박 4일 일정</td>
-                    </tr>
-                    <tr>
-                        <th>내용</th>
-                        <td>친구들과 함께 하는 여행이닷</td>
-                    </tr>
-                    <tr>
-                        <th>기간</th>
-                        <td>
-                            <!-- 여행 기간으로 반영해주세요. -->
-                            2024. 11. 04 ~ 2024. 11. 06
-                        </td>
-                    </tr>
-                    <tr>
-                        <th>구분</th>
-                        <td>
-                        <div class="check"><input type="checkbox" name ="loginChk" checked>체크</div>
-                        </td>
-                    </tr>
-                    <tr>
-                        
-                        <td>
-                            <a class="btn btn-warning"><span class="red-btn">Delete</span></a>
-                            <a class="btn btn-success"><span class="green-btn">Update</span></a>
-                        </td>
-                    </tr>
-                   <!--  <tr th:each="todo : ${todos}">
-                        <td th:text="${todo.description}"></td>
-                        <td th:text="${#dates.format(todo.targetDate, 'yyyy-MM-dd')}"></td>
-                        <td th:text="${todo.done ? 'Yes' : 'No'}">
-                            <div class="check"><input type="checkbox" name ="loginChk" value="true">체크</div>
-                        </td>
-                        <td>
-                            <a th:href="@{/delete-todo(id=${todo.id})}" class="btn btn-warning"><span class="red-btn">Delete</span></a>
-                            <a th:href="@{/update-todo(id=${todo.id})}" class="btn btn-success"><span class="green-btn">Update</span></a>
-                        </td>
-                    </tr> -->
-                </tbody>
-            </table>
-            <p>by. Mindun</p>
-            <a href="/add-todo" class="btn btn-success">리스트 추가</a>
+            <div class="travle">
+                여행목록들 쫘르륵
+            </div>
+            <div class="travle">
+                개인일정목록 쫘르륵
+            </div>
+            <div class="travle">
+                기타 쫘르륵
+            </div>
+            <div class="travle">
+                중요 쫘르륵
+            </div>
+            <div class="buttons color"><a href="/todolist" class="banner-btn btn">일정 만들기</a></div>
         </main>
         <footer class="length">
             <div class="f-inner">

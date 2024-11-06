@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>PASSBANK :: 안정된 금융생활</title>
+    <title>패스트립 :: 메인화면 </title>
 	<!-- css -->
 	<link rel="icon" th:href="@{/img/favicon-01.png}">
 	<link rel="stylesheet" th:href="@{/css/common/reset.css}">
@@ -14,6 +14,7 @@
 	<link href="https://unpkg.com/aos@2.3.1/dist/aos.css" rel="stylesheet">
 	<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined" rel="stylesheet">
 	<!-- js -->
+	<script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
 	<script src="https://unpkg.com/aos@2.3.1/dist/aos.js"></script>
     <script src="/js/header.js"></script>
     <script src="/js/index.js"></script>
@@ -22,12 +23,10 @@
 	<div id="wrap">
 		<header>
 			<div id="header-box">
-				<h1 class="logo"><a href="/"><img src="/img/logo_white.png" alt="패스뱅크"></a></h1>
+				<h1 class="logo"><a href="/"><img src="/img/logo_black.png" alt="패스뱅크"></a></h1>
 				<div class="nav">
 					<ul>
-						<li class="main-menu"><span class="material-symbols-outlined">
-							favorite
-							</span><a href="#">MY</a>
+						<li class="main-menu"><a href="#">MY</a>
 							<ul class="sub-nav">
 								<li class="sub-menu"><a href="/account">마이페이지</a></li>
 								<li class="sub-menu"><a href="/account">즐겨찾기</a></li>
@@ -40,38 +39,38 @@
 								<li class="sub-menu"><a href="#">공유된 일정</a></li>
 							</ul>
 						</li>
-						<li class="main-menu"><a href="#">공항 및 숙소</a>
+						<li class="main-menu"><a href="#">고객센터</a>
 							<ul class="sub-nav">
 								<li class="sub-menu"><a href="#">계좌이체</a></li>
 								<li class="sub-menu"><a href="#">증권이체</a></li>
 							</ul>
 						</li>
-						<li class="main-menu"><a href="#">커뮤니티</a>
-							<ul class="sub-nav">
-								<li class="sub-menu"><a href="#">증권 구매</a></li>
-								<li class="sub-menu"><a href="#">증권 판매</a></li>
-							</ul>
-						</li>
+						<!-- <li class="main-menu"><a href="#">로그인</a></li> -->
 					</ul>
 					<div id="box-bg">
 					</div>
 				</div>
 				<div class="top-nav">
-					<span class="top-btn"><a href="/admin">관리자</a></span>
+					<span class="top-btn"><a href="/admin" class="banner-btn btn">관리자</a></span>
 					<th:block th:if="${session.user == null}">
-						<span class="top-btn"><a href="/login">로그인</a></span>
+						<span class="top-btn"><a href="/login" class="banner-btn btn">로그인</a></span>
 					</th:block>
 					<th:block th:if="${session.user != null}">
-						<span class="top-btn"><a href="/logout">로그아웃</a></span>
+						<span class="top-btn"><a href="/logout" class="banner-btn btn">로그아웃</a></span>
 					</th:block>
 				</div>
 			</div>
 		</header>
-		<div class="banner"></div>
 		<main class="main">
-			<div class="main-text">
-				<h2>여행 계획중이신가요?<br> 바로 여기서 시작해보세요.</h2>
-				<a href="#" class="banner-btn btn">일정 바로가기</a>
+			<div class="main-banner">
+				<div class="banner-text">
+					<h2>일정 관리가 어려우셨나요?<br><span class="brown">패스트립</span>만 있다면 쉬워져요!</h2>
+					<p>친구들과 여행 계획부터 일반 개인적인 스케줄까지 쉽고 편리하게 만들어보세요!</p>
+					<div class="buttons color"><a href="/todolist" class="banner-btn btn">일정 만들기</a></div>
+				</div>
+				<div class="banner-img">
+					<img src="/img/main-background2.jpg" alt="배너">
+				</div>
 			</div>
 			<div class="news-box">
 				<h2>여행 소식</h2>
@@ -97,10 +96,10 @@
 					<address>
 						<h4>고객센터</h4>
 						<span>전화 : 1588-1234 (평일 오전9시 ~ 오후 6시)</span>
-						<span>보이스피싱/사기 : 1588-5678 (24시간 연중무휴)</span>
+						<span>숙소/티켓문의 : 1588-5678 (24시간 연중무휴)</span>
 						<span>이메일문의 : japgaja8282@naver.com</span>
 					</address>
-					<h4>(주)패스뱅크</h4>
+					<h4>(주)패스트립</h4>
 					<article>
 						<div class="kim">
 							<h5>Backend : Sung Sig Kim</h5>

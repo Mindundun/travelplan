@@ -1,5 +1,6 @@
 package com.travel.travelplan.config;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.http.HttpMethod;
@@ -12,6 +13,9 @@ import org.springframework.security.web.SecurityFilterChain;
 @EnableWebSecurity
 public class SecurityConfig {
 
+    @Autowired
+    private CustomLoginSuccessHandler customLoginSuccessHandler;
+
     @Bean
     BCryptPasswordEncoder bCryptPasswordEncoder() { // 암호화 메소드 구현
         return new BCryptPasswordEncoder();
@@ -22,16 +26,19 @@ public class SecurityConfig {
         http
             .authorizeHttpRequests((auth) -> auth
                 .requestMatchers("/css/**", "/js/**", "/img/**").permitAll()
-                .requestMatchers("/", "/login", "/loginProc", "/join").permitAll()
-                .requestMatchers("/send/email", "/verify/email").permitAll()
+                .requestMatchers("/").permitAll()
+
+                // 최초 회원가입 관련 요청은 모두 허용 (로그인 페이지, 회원가입 페이지, 이메일 전송, 이메일 인증, 닉네임 중복체크)
+                .requestMatchers("/login", "/join", "/send/email", "/verify/email", "/verify/nickName").permitAll()
                 .requestMatchers(HttpMethod.GET, "/api/v1/board/**").permitAll()
+                .requestMatchers("/todolist/**").permitAll()
                 .requestMatchers("/admin/**").permitAll()// .hasRole("ADMIN")
                 .requestMatchers("/my/**").hasAnyRole("ADMIN", "USER")
                 .anyRequest().authenticated());
 
         http
             .formLogin((auth) -> auth.loginPage("/login")
-                .successHandler(new CustomLoginSuccessHandler())
+                .successHandler(customLoginSuccessHandler)
                 .permitAll())
 
             .logout((auth) -> auth.logoutUrl("/logout")
