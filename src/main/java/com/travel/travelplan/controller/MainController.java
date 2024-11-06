@@ -4,6 +4,8 @@ import java.util.Collection;
 import java.util.Iterator;
 import java.util.List;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.GrantedAuthority;
@@ -19,12 +21,13 @@ import com.travel.travelplan.dto.naver.BlogPost;
 import com.travel.travelplan.entity.User;
 
 import lombok.RequiredArgsConstructor;
-
 @Controller
 @RequiredArgsConstructor
 public class MainController {
     
     private final NaverBlogSearchComponent naverBlogSearchComponent;
+    // Logger 선언
+    private static final Logger log = LoggerFactory.getLogger(MainController.class);
 
     @GetMapping("/")
     public String mainP(Model model){
