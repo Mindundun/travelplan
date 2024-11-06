@@ -10,6 +10,9 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 
+import com.travel.travelplan.dto.CustomUserDetails;
+import com.travel.travelplan.entity.User;
+
 @Controller
 public class MainController {
     
@@ -19,7 +22,14 @@ public class MainController {
         String id = SecurityContextHolder.getContext().getAuthentication().getName();
 
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        
+        //UserEntity의 객체를 가져옴
+        CustomUserDetails customuserdetails = (CustomUserDetails) authentication.getPrincipal();
+        User user = customuserdetails.getUser();
 
+        // User 객체에서 id를 가져옴
+        int userId = user.getId(); // getId() 메서드를 사용하여 ID를 가져옵니다.
+        
         Collection<? extends GrantedAuthority> authorities = authentication.getAuthorities();
         Iterator<? extends GrantedAuthority> iter = authorities.iterator();
         GrantedAuthority auth = iter.next();
