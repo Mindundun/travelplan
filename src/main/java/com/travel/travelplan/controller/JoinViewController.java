@@ -3,18 +3,21 @@ package com.travel.travelplan.controller;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Controller;
-import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestParam;
 
 import com.travel.travelplan.dto.CustomUserDetails;
 
+import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 
+
+@Slf4j
 @Controller
-public class LoginController {
+@RequiredArgsConstructor
+public class JoinViewController {
 
-    @GetMapping("/login")
-    public String loginP(@RequestParam(value = "redirectUrl", required = false) String redirectUrl, @RequestParam(value = "error", required = false) String error, Model model) {
+    @GetMapping("/join")
+    public String join() {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
 
         // 로그인된 사용자라면 리디렉션
@@ -23,16 +26,7 @@ public class LoginController {
             return "redirect:/";
         }
 
-        if(error != null) {
-            model.addAttribute("error", "아이디 또는 비밀번호가 일치하지 않습니다.");
-        }
-
-        if(redirectUrl != null) {
-            model.addAttribute("redirectUrl", redirectUrl);
-        }
-
-        return "login";
+        return "join";
     }
-    
-    
+
 }

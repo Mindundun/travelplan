@@ -1,8 +1,7 @@
 <html>
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport"
-          content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
+    <meta name="viewport" content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
     <title>PASSBANK :: 로그인</title>
     <!-- css -->
@@ -12,18 +11,18 @@
     <link rel="stylesheet" th:href="@{/css/common/fonts.css}">
     <link rel="stylesheet" th:href="@{/css/header-footer.css}">
 	<link rel="stylesheet" th:href="@{/css/login.css}">
-    <!-- js -->
-    <script src="@{/js/login.js}"></script>
+    <script src="https://code.jquery.com/jquery-3.7.1.slim.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
 </head>
 <body>
     <div id="login-main">
         <div class="login-box">
             <h1 class="logo"><a href="/"><img src="/img/logo_white.png" alt="패스뱅크"></a></h1>
-            <form action="/login" method="POST" name="loginForm" >
+            <form action="/login" method="POST" name="loginForm" id="loginForm">
                 <div class="idPass">
                     <input id="username" type="text" name="username" placeholder="아이디" class="id"/>
-                    <input id="password" type="password" name="password" placeholder="패스워드" class="pass"/>
-                    <input type="hidden" name="_csrf" value="{{_csrf.token}}"/>
+                    <input id="password" type="password" name="password" placeholder="패스워드" class="pass" autocomplete="false"/>
+                    <!-- <input type="hidden" name="_csrf" value="{{_csrf.token}}"/> -->
                     <!-- 로그인 상태 유지 시켜주세요 -->
                     <div class="loginChk">
                         <div class="check"><input type="checkbox" name ="loginChk" value="true"><span>로그인 상태유지</span></div>
@@ -43,5 +42,54 @@
             </div>
         </div>
     </div>
+    <script>
+        $(function() {
+            $('#loginForm').submit(function(e) {
+                e.preventDefault();
+                debugger;
+                const username = $('#username').val();
+                const password = $('#password').val();
+                if(username.trim().length == 0) {
+                    alert('아이디를 입력해주세요.');
+                    $('#username').focus();
+                    $('#username').val('');
+                    $('#password').val('');
+                    return;
+                }
+                if(password.trim().length == 0) {
+                    alert('비밀번호를 입력해주세요.');
+                    $('#password').focus();
+                    $('#password').val('');
+                    return;
+                }
+
+                const loginChk = $('input:checkbox[id="loginChk"]').is(":checked");
+                // 현재 리다이렉트된 url을 현 주소에서 꺼내오는 방법
+                const urlParams = new URLSearchParams(window.location.search);
+                const redirectUrl = urlParams.get('redirectUrl');
+
+                const formData = new FormData();
+                formData.append('username', username);
+                formData.append('password', password);
+
+                axios.post('/login', formData)
+                .then(res => {
+                    debugger;
+                    if(res.data == 'SUCCESS') {
+                        alert('로그인 되었습니다.');
+                        location.href = redirectUrl ? redirectUrl : '/';
+                    } else {
+                        alert('아이디 혹은 비밀번호가 일치하지 않습니다.');
+                        $('#username').val('');
+                        $('#password').val('');
+                        $('#username').focus();
+                    }
+                })
+                .catch(function(error) {
+                    console.log(error);
+                })
+            })
+        })
+    </script>
 </body>
 </html>

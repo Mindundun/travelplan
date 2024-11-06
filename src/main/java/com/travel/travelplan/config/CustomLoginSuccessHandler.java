@@ -12,6 +12,7 @@ import com.travel.travelplan.entity.User;
 import com.travel.travelplan.repository.UserRepository;
 
 import jakarta.servlet.ServletException;
+import jakarta.servlet.ServletOutputStream;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import jakarta.servlet.http.HttpSession;
@@ -47,11 +48,16 @@ public class CustomLoginSuccessHandler extends SimpleUrlAuthenticationSuccessHan
         newSession.setAttribute("user", user); // 일단 유저 엔티티를 세션에 올린다.
         newSession.setMaxInactiveInterval(60 * 30); // 세션 유지시간을 30분으로 설정한다.
 
-        // 로그인 성공 후 기존 요청했던 페이지로 리다이렉트 시킨다.
-        response.sendRedirect("/"); // 기본 페이지로 이동
+        // JSON 응답을 만들어서 클라이언트에게 전달
+        response.setContentType("application/json");
+        response.setCharacterEncoding("UTF-8");
 
+        // 클라이언트로 redirectUrl을 포함한 JSON 응답 보내기
+        try(ServletOutputStream outputStream = response.getOutputStream()) {
+            String responseDataStr = "SUCCESS";
+            outputStream.write(responseDataStr.getBytes("UTF-8"));
+            outputStream.flush();
+        };
     }
-
-    
 
 }

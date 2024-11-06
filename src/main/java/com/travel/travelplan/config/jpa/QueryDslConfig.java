@@ -1,4 +1,4 @@
-package com.travel.travelplan.config;
+package com.travel.travelplan.config.jpa;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;

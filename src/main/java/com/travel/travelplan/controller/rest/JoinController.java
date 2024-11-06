@@ -1,20 +1,18 @@
-package com.travel.travelplan.controller;
+package com.travel.travelplan.controller.rest;
 
 import java.util.Map;
 
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.core.Authentication;
-import org.springframework.security.core.context.SecurityContextHolder;
-import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.bind.annotation.RestController;
 
-import com.travel.travelplan.dto.CustomUserDetails;
 import com.travel.travelplan.requests.JoinRequest;
 import com.travel.travelplan.service.JoinService;
 
@@ -22,30 +20,16 @@ import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 
-
 @Slf4j
-@Controller
+@RestController
+@RequestMapping("/api/v1")
 @ControllerAdvice(basePackageClasses = JoinController.class)
 @RequiredArgsConstructor
 public class JoinController {
 
     private final JoinService joinService;
 
-    @GetMapping("/join")
-    public String join() {
-        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-
-        // 로그인된 사용자라면 리디렉션
-        boolean isLoggedIn = authentication != null && authentication.isAuthenticated() && authentication.getPrincipal() instanceof CustomUserDetails;
-        if (isLoggedIn) {
-            return "redirect:/";
-        }
-
-        return "join";
-    }
-
     @PostMapping("/join")
-    @ResponseBody
     public ResponseEntity<Boolean> joinProcess(@RequestBody @Valid JoinRequest joinRequest) {
         log.debug("회원가입 프로세스 시작 joinRequest: {}", joinRequest);
         joinService.joinProcess(joinRequest);
@@ -54,7 +38,6 @@ public class JoinController {
     }
 
     @PostMapping("/send/email")
-    @ResponseBody
     public ResponseEntity<Boolean> sendRegisterMail(@RequestBody Map<String, String> map) {
         String email = map.getOrDefault("email", "");
         log.debug("회원가입 이메일 전송 시작 email: {}", email);
@@ -65,7 +48,6 @@ public class JoinController {
 
     // 이메일 인증 확인
     @PostMapping("/verify/email")
-    @ResponseBody
     public ResponseEntity<Boolean> verifyEmail(@RequestBody Map<String,String> map) {
 
         String email = map.getOrDefault("email", "");
