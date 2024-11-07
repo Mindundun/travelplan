@@ -29,15 +29,16 @@ public class SecurityConfig {
     SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
         http
             .authorizeHttpRequests((auth) -> auth
-                .requestMatchers("/").permitAll()
+                .requestMatchers("/**").permitAll()
                 .requestMatchers("/css/**", "/js/**", "/img/**").permitAll()
 
                 // 최초 회원가입 관련 요청은 모두 허용 (로그인 페이지, 회원가입 페이지, 이메일 전송, 이메일 인증, 닉네임 중복체크)
-                .requestMatchers("/login", "/join").permitAll()
-                .requestMatchers("/todolist/**").permitAll()
-                .requestMatchers("/todomain/**").permitAll()
-                .requestMatchers("/admin/**").permitAll()// .hasRole("ADMIN")
-                .requestMatchers("/my/**").hasAnyRole("ADMIN", "USER")
+                // .requestMatchers("/login", "/join").permitAll()
+                // .requestMatchers("/todolist/**").permitAll()
+                // .requestMatchers("/todomain/**").permitAll()
+                // .requestMatchers("/todomain2").permitAll()
+                // .requestMatchers("/admin/**").permitAll()// .hasRole("ADMIN")
+                // .requestMatchers("/my/**").hasAnyRole("ADMIN", "USER")
                 .anyRequest().authenticated());
 
         http

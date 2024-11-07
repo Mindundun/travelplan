@@ -72,4 +72,19 @@ public class MainController {
             return ResponseEntity.badRequest().build();
         }
     }
+
+    @GetMapping("/test")
+    public String test1() {
+        return "test1";
+    }
+
+    @GetMapping("/test2")
+    public String test2() {
+        return "test/test";
+    }
+
+    @GetMapping("/todomain2")
+    public String todomain2() {
+        return "todomain2";
+    }
 }
