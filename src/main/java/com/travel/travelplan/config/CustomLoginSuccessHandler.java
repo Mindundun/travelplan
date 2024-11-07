@@ -2,11 +2,16 @@ package com.travel.travelplan.config;
 
 import java.io.IOException;
 import java.time.LocalDateTime;
+import java.util.Map;
 
 import org.springframework.security.core.Authentication;
 import org.springframework.security.web.authentication.SimpleUrlAuthenticationSuccessHandler;
+import org.springframework.security.web.savedrequest.HttpSessionRequestCache;
+import org.springframework.security.web.savedrequest.RequestCache;
+import org.springframework.security.web.savedrequest.SavedRequest;
 import org.springframework.stereotype.Component;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.travel.travelplan.dto.CustomUserDetails;
 import com.travel.travelplan.entity.User;
 import com.travel.travelplan.repository.UserRepository;
@@ -54,10 +59,27 @@ public class CustomLoginSuccessHandler extends SimpleUrlAuthenticationSuccessHan
 
         // 클라이언트로 redirectUrl을 포함한 JSON 응답 보내기
         try(ServletOutputStream outputStream = response.getOutputStream()) {
-            String responseDataStr = "SUCCESS";
+            Map<String, String> map = Map.of(
+                "result" , "SUCCESS",
+                "redirectUrl", getReturnUrl(request, response)
+            );
+            ObjectMapper objectMapper = new ObjectMapper();
+            String responseDataStr = objectMapper.writeValueAsString(map);
             outputStream.write(responseDataStr.getBytes("UTF-8"));
             outputStream.flush();
         };
+    }
+
+    private String getReturnUrl(HttpServletRequest request, HttpServletResponse response) {
+        RequestCache requestCache = new HttpSessionRequestCache();
+
+        SavedRequest savedRequest = requestCache.getRequest(request, response);
+
+        if(savedRequest == null) {
+            return null;
+            // return request.getSession().getServletContext().getContextPath();
+        }
+        return savedRequest.getRedirectUrl();
     }
 
 }

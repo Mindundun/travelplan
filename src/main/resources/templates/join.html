@@ -786,7 +786,7 @@
                 usernameDoc.disabled = true;
                 usernameCheckBtn.disabled = true;
 
-                fetch('/send/email', {
+                fetch('/api/v1/send/email', {
                     method: 'POST',
                     headers: {
                         'Content-Type': 'application/json'
@@ -830,7 +830,7 @@
                     email : username
                 }
 
-                fetch('/verify/email', {
+                fetch('/api/v1/verify/email', {
                     method: 'POST',
                     headers: {
                         'Content-Type': 'application/json'
@@ -865,7 +865,7 @@
                         return;
                     }
 
-                    fetch(`/verify/nickName?nickName=${nickName}`, {
+                    fetch(`api/v1/verify/nickName?nickName=${nickName}`, {
                         method: 'GET',
                         headers: {
                             'Content-Type': 'application/json'

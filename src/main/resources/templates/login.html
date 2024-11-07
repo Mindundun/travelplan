@@ -74,10 +74,12 @@
 
                 axios.post('/login', formData)
                 .then(res => {
-                    debugger;
-                    if(res.data == 'SUCCESS') {
+                    const data = res.data;
+                    if(data.result == 'SUCCESS') {
                         alert('로그인 되었습니다.');
-                        location.href = redirectUrl ? redirectUrl : '/';
+                        const serverRedirectUrl = data.redirectUrl;
+                        location.href = serverRedirectUrl ? serverRedirectUrl
+                                        : redirectUrl ? redirectUrl : '/';
                     } else {
                         alert('아이디 혹은 비밀번호가 일치하지 않습니다.');
                         $('#username').val('');
