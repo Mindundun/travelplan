@@ -18,6 +18,7 @@
 	<!-- js -->
 	<script src="https://unpkg.com/aos@2.3.1/dist/aos.js"></script>
     <script src="/js/header.js"></script>
+    <script src="/js/todomain.js"></script>
 </head>
 <body>
     <!-- Header 포함 -->
@@ -63,19 +64,36 @@
 			</div>
 		</header>
         <main class="main">
-            <div class="travle">
-                여행목록들 쫘르륵
+            <div class="top-text">
+                <h2>일정 목록</h2>
+                <div class="top-right">
+                    <p><span>우선순위</span></p>
+                    <p><span>완료</span></p>
+                </div>
             </div>
-            <div class="travle">
-                개인일정목록 쫘르륵
+            <div class="todo-inner">
+                <div class="todo-box">
+                    <h3 class="sticker">여행</h3>
+                    <input type="checkbox" id="chk1">
+                    <label for="chk1">뷰 공부하기<span class="due-date">2024-12-15</span></label>
+                </div>
+                <div class="todo-box">
+                    <h3 class="sticker">개인스케줄</h3>
+                    <input type="checkbox" id="chk2">
+                    <label for="chk2">뷰 공부하기</label>
+                </div>
+                <div class="todo-box">
+                    <h3 class="sticker">예매</h3>
+                    <input type="checkbox" id="chk3">
+                    <label for="chk3">뷰 공부하기</label>
+                </div>
+                <div class="todo-box">
+                    <h3 class="sticker">여행</h3>
+                    <input type="checkbox" id="chk4">
+                    <label for="chk4">뷰 공부하기</label>
+                </div>
             </div>
-            <div class="travle">
-                기타 쫘르륵
-            </div>
-            <div class="travle">
-                중요 쫘르륵
-            </div>
-            <div class="buttons color"><a href="/todolist" class="banner-btn btn">일정 만들기</a></div>
+            <div class="buttons color"><a href="/todolist" class="banner-btn btn">전체 일정 목록</a></div>
         </main>
         <footer class="length">
             <div class="f-inner">

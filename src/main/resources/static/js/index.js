@@ -16,7 +16,7 @@ window.onload = function() {
 }
 
 function createPostElement(data, postContainer) {
-    debugger;
+    /* debugger */;
     const existingIds = Array.from(postContainer.children)
         .map(child => child.dataset.id);
 

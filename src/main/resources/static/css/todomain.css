@@ -5,7 +5,77 @@
 /* 공통 */
 body {color: #333; font-family: 'Noto Sans KR', sans-serif, 'Gmarket Sans'; box-sizing: border-box; scroll-behavior: smooth; overflow-x: hidden;  width: 100%; height: auto; background: #f5f5f5;}
 #wrap { width: 100%; height: 100%; }
-main {max-width: 1200px; height: calc(100vh-300px); margin: 0 auto; padding-top: 150px; margin-left: 20%;  }
+main {max-width: 1200px; height: calc(100vh-300px); margin: 0 auto; padding-top: 80px; margin-left: 20%;  }
 
 
-main {display: grid; grid-template-columns: repeat(3,1fr);}
+.todo-inner{display: grid; gap: 30px; grid-template-columns: repeat(3,1fr); height: 700px;}
+
+
+/* .todo-box {background: #fab4b4; border: 5px solid #ccc; border-radius: 20px; padding: 20px;} */
+
+.todo-box {
+    background: #fbd7d7; /* 밝은 파스텔 핑크톤 */
+    border: 3px dashed #f79fbb; /* 투박한 파스텔 핑크 테두리 */
+    border-radius: 15px;
+    padding: 20px;
+    box-shadow: 5px 5px 15px rgba(0, 0, 0, 0.1); /* 약간의 그림자 */
+    color: #333;
+    transition: all 0.3s ease;
+    margin-bottom: 15px;
+    position: relative;
+}/* 
+.todo-box:nth-child(1) {background: lightblue;}
+.todo-box:nth-child(2) {background: lightcyan;}
+.todo-box:nth-child(3) {background: lightskyblue;}
+.todo-box:nth-child(4) {background: lightslategray;} */
+
+.todo-box:nth-child(1) {
+    background: #ffd1dc; /* 밝은 핑크톤 */
+    border-color: #ff99aa;
+}
+
+.todo-box:nth-child(2) {
+    background: #bae1ff; /* 밝은 하늘색 */
+    border-color: #99c2ff;
+}
+
+.todo-box:nth-child(3) {
+    background: #c1ffd7; /* 밝은 민트색 */
+    border-color: #88ffbb;
+}
+
+.todo-box:nth-child(4) {
+    background: #ffd1a3; /* 밝은 주황색 */
+    border-color: #ffb57a;
+}
+
+/* hover 시 조금 더 밝아지는 효과 */
+.todo-box:hover {
+    /* transform: scale(1.05); */
+    box-shadow: 8px 8px 20px rgba(0, 0, 0, 0.2);
+}
+
+
+/* 기본 체크박스 숨기기 */
+input[type="checkbox"] {display: none;}
+/* 체크박스를 커스텀할 영역 설정 */
+label {display: inline-block;cursor: pointer;padding-left: 30px;position: relative;font-size: 16px;line-height: 1.5;}
+/* 체크박스의 커스텀 박스 */
+label::before {content: "";width: 20px;height: 20px;border: 2px solid #333;border-radius: 4px;position: absolute;left: 0;top: 50%;transform: translateY(-50%);background-color: transparent;transition: all 0.3s ease;}
+/* 체크된 상태 스타일 */
+input[type="checkbox"]:checked + label::before {
+    background-color: #4CAF50; /* 원하는 배경색으로 변경 */
+    background-image: url('/img/check_white.png'); /* 체크 이미지 */
+    background-repeat: no-repeat;
+    background-position: center;
+    background-size: 14px 14px;
+    border-color: #4CAF50; /* 체크된 상태의 테두리 색상 */
+}
+
+input[type="checkbox"]:checked + label {
+    text-decoration: line-through;
+    color: #888;
+}
+
+.sticker {position: absolute; right: 10px; top: 10px; background: rgba(255,255,255,0.7); width: 100px; text-align: center; border-radius: 4px; box-shadow: 1px 2px 5px #f3f3f3; cursor: pointer;}
+
