@@ -8,6 +8,9 @@ body {color: #333; font-family: 'Noto Sans KR', sans-serif, 'Gmarket Sans'; box-
 main {max-width: 1200px; height: calc(100vh-300px); margin: 0 auto; padding-top: 80px; margin-left: 20%;  }
 
 
+
+
+
 .todo-inner{display: grid; gap: 30px; grid-template-columns: repeat(3,1fr); height: 700px;}
 
 
@@ -59,7 +62,7 @@ main {max-width: 1200px; height: calc(100vh-300px); margin: 0 auto; padding-top:
 /* 기본 체크박스 숨기기 */
 input[type="checkbox"] {display: none;}
 /* 체크박스를 커스텀할 영역 설정 */
-label {display: inline-block;cursor: pointer;padding-left: 30px;position: relative;font-size: 16px;line-height: 1.5;}
+label {display: inline;cursor: pointer;padding-left: 30px;  position: relative;font-size: 16px;line-height: 1.5;}
 /* 체크박스의 커스텀 박스 */
 label::before {content: "";width: 20px;height: 20px;border: 2px solid #333;border-radius: 4px;position: absolute;left: 0;top: 50%;transform: translateY(-50%);background-color: transparent;transition: all 0.3s ease;}
 /* 체크된 상태 스타일 */
@@ -77,5 +80,8 @@ input[type="checkbox"]:checked + label {
     color: #888;
 }
 
+.input-box {padding-top: 10px; width: 200px; overflow: hidden; text-overflow:ellipsis;white-space:nowrap; word-break: break-word;}
 .sticker {position: absolute; right: 10px; top: 10px; background: rgba(255,255,255,0.7); width: 100px; text-align: center; border-radius: 4px; box-shadow: 1px 2px 5px #f3f3f3; cursor: pointer;}
+.due-Category {font-weight: bold;}
+
 
