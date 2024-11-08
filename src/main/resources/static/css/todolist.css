@@ -3,9 +3,32 @@
 @import url('https://webfontworld.github.io/gmarket/GmarketSans.css');
 
 /* 공통 */
-body {color: #333; font-family: 'Noto Sans KR', sans-serif, 'Gmarket Sans'; box-sizing: border-box; scroll-behavior: smooth; overflow-x: hidden;  width: 100%; height: auto; background: #f5f5f5;}
-#wrap { width: 100%; height: 100%; }
-main {max-width: 1200px; height: calc(100vh-300px); margin: 0 auto; padding-top: 150px; margin-left: 20%; }
+body {color: #333; font-family: 'Noto Sans KR', sans-serif, 'Gmarket Sans'; box-sizing: border-box; scroll-behavior: smooth; overflow-x: hidden;  width: 100%; height: auto; background: #fffefe;}
+#wrap { width: 100%; height: 100vh; }
+main { display: flex; gap: 120px; width: 100%; height: 100%; padding-top: 100px; background: #f8f8f8; }
+
+
+/* 헤더 */
+.admin-header { border-bottom: 0.5px solid #d3d3d3;}
+.admin-header:hover {height: 80px;}
+
+/* 사이드 메뉴 */
+aside {width: 300px; height: 700px; padding: 30px; border-radius: 0 20px 20px 0; color: #333; background: #fff; box-shadow: 5px 5px 15px rgba(0, 0, 0, 0.1); }
+.admin-user {display: flex; flex-direction: column; align-items: center; margin-bottom: 20px;}
+.admin-user > img {width: 100px; background: #666; padding: 20px; border-radius: 50px;}
+.admin-user > .name {font-size: 20px; font-weight: 500; line-height: 2;}
+.admin-user > .group {font-size: 14px;}
+.aside-nav {margin-bottom: 25px;}
+.aside-nav li {line-height:3; padding-left: 10px; margin-bottom: 5px; border-radius: 10px; }
+.aside-nav li > a {display: inline-block; width: 100%; }
+.aside-nav li:hover {background: #0b3575; color: #fff;}
+.aside-nav li.active {background: #146CEF; color: #fff;}
+.aside-menu > a > span {display: inline-block; vertical-align: middle; margin-right: 10px;}
+.fun {margin-top: 25px; display: grid; gap: 10px; grid-template-columns: repeat(2, 1fr);}
+.fun > li {padding: 20px; border-radius: 10px; transition: all 0.3s;}
+.fun > li:hover {background: #26a7e2;}
+.fun > li > a {width: 100%;  font-size: 14px;  display: flex; flex-direction: column;  justify-content: space-between; align-items: center;}
+.fun > li > a > img {width: 42px;  padding-bottom: 10px;}
 
 /* 카테고리 검색 기능 */
 .search {display: flex; justify-content: space-around; width: 100%; height: 80px; padding: 10px; border-radius: 20px; border: 2px solid #729eff; margin-bottom: 50px; color: #333; background: #fefefe;}
@@ -14,7 +37,220 @@ main {max-width: 1200px; height: calc(100vh-300px); margin: 0 auto; padding-top:
 .search > select  option,input {display: inline-block; width: 100%; height: 100%; background: #c8d9ff;outline: none;}
 
 
-table {display: inline-block; width: 100%; height: 100%; padding: 30px; border: 3px solid #729eff; border-radius: 20px; background: #c8d9ff; text-align: center;}
+table {display: inline-block; width: 100%; height: 100%; padding: 30px; border: 3px solid #729eff; border-radius: 20px; background: #c8d9ff; text-align: center; position: relative;}
 tbody {display: flex; width: 100%;}
 table th {width: 100%; border-bottom: 2px solid #729eff; line-height: 2.5;  margin-bottom: 10px;}
 table tr {display: flex; flex-direction: column; width: 100%; justify-content: space-between;}
+
+.edit-modal {position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%);}
+
+/* 모달 스타일 */
+.modal {
+    display: none;
+    position: absolute;
+    z-index: 1000;
+    left: 50%;
+    top: 50%;
+    transform: translate(-50%, -50%);
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.5);
+}
+
+.modal-content {
+    background-color: #fff;
+    margin: 10% auto;
+    padding: 20px;
+    border-radius: 10px;
+    width: 60%;
+    max-width: 500px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+}
+
+.close {
+    float: right;
+    font-size: 24px;
+    cursor: pointer;
+}
+
+/* 모달 내부 레이아웃 */
+.modal-row {
+    margin-bottom: 15px;
+    display: flex;
+    flex-direction: column;
+}
+
+.modal-column {
+    display: flex;
+    flex-direction: column;
+    flex: 1;
+    margin-right: 10px;
+}
+
+.modal-row label {
+    font-weight: bold;
+    margin-bottom: 5px;
+}
+
+.modal-row input[type="text"], 
+.modal-row input[type="date"], 
+.modal-row select {
+    width: 100%;
+    padding: 8px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+}
+
+/* 한 줄에 두 개씩 배치할 때 */
+.modal-row .modal-column:last-child {
+    margin-right: 0; /* 마지막 컬럼은 마진 제거 */
+}
+
+.modal-row:nth-child(2), .modal-row:nth-child(3) {
+    flex-direction: row; /* 두 번째와 세 번째 줄은 두 개씩 배치 */
+}
+
+#email-list {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 5px;
+    margin-top: 10px;
+}
+
+.email-tag {
+    display: flex;
+    align-items: center;
+    background-color: #e0f7fa;
+    padding: 5px 10px;
+    border-radius: 15px;
+    color: #00796b;
+}
+
+.remove-button {
+    margin-left: 5px;
+    cursor: pointer;
+    color: #ff5252;
+}
+
+
+/* 기본 레이아웃 */
+.travel-todo {
+    font-family: 'Arial', sans-serif;
+    background-color: #f9f9f9;
+    padding: 20px;
+    border-radius: 10px;
+    width: 60%;
+    margin: 0 auto;
+}
+
+h2 {
+    color: #2a7d8f;
+    font-size: 24px;
+    margin-bottom: 15px;
+}
+
+/* 여행 일정 */
+.travel-schedule .schedule-item {
+    background-color: #fff;
+    padding: 15px;
+    margin-bottom: 10px;
+    border-radius: 8px;
+    border: 1px solid #ddd;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.travel-schedule .destination {
+    font-weight: bold;
+    font-size: 18px;
+}
+
+.travel-schedule .dates {
+    font-size: 16px;
+    color: #777;
+}
+
+.edit-btn {
+    background-color: #ffbc00;
+    color: #fff;
+    border: none;
+    padding: 8px 15px;
+    border-radius: 5px;
+    cursor: pointer;
+}
+
+/* 짐 체크리스트 */
+.packing-list ul {
+    list-style: none;
+    padding: 0;
+}
+
+.packing-list li {
+    background-color: #fff;
+    padding: 10px;
+    margin-bottom: 5px;
+    border-radius: 5px;
+    display: flex;
+    align-items: center;
+}
+
+.packing-list input[type="checkbox"] {
+    margin-right: 10px;
+}
+
+/* 예산 관리 */
+.budget .budget-item {
+    display: flex;
+    justify-content: space-between;
+    margin-bottom: 10px;
+    background-color: #fff;
+    padding: 10px;
+    border-radius: 5px;
+    border: 1px solid #ddd;
+}
+
+.budget-input {
+    padding: 5px;
+    width: 100px;
+    border-radius: 5px;
+    border: 1px solid #ddd;
+}
+
+/* 여행 동행자 */
+.travel-companion {
+    background-color: #fff;
+    padding: 20px;
+    border-radius: 10px;
+    margin-top: 30px;
+    border: 1px solid #ddd;
+}
+
+#companion-list {
+    list-style: none;
+    padding: 0;
+}
+
+#companion-list li {
+    margin-top: 5px;
+    background-color: #e0f7fa;
+    padding: 8px;
+    border-radius: 5px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+/* 버튼 */
+button {
+    background-color: #2a7d8f;
+    color: white;
+    padding: 10px;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+}
+
+button:hover {
+    background-color: #218a92;
+}

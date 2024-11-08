@@ -9,8 +9,6 @@ main {max-width: 1200px; height: calc(100vh-300px); margin: 0 auto; padding-top:
 
 
 
-
-
 .todo-inner{display: grid; gap: 30px; grid-template-columns: repeat(3,1fr); height: 700px;}
 
 
