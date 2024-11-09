@@ -28,25 +28,70 @@
     <div class="container">
         <h1>Enter Todo Details</h1>
         <form th:action="@{/add-todo}" th:object="${todo}" method="post">
+            <!-- 일정명 입력 -->
             <fieldset class="mb-3">
-                <label th:for="description">Description</label>                
+                <label th:for="eventName">Event Name</label>
+                <input type="text" th:field="*{eventName}" required="required"/>
+                <div th:if="${#fields.hasErrors('eventName')}" class="text-warning">
+                    <p th:errors="*{eventName}">Event Name Error</p>
+                </div>
+            </fieldset>
+
+            <!-- 카테고리 입력 -->
+            <fieldset class="mb-3">
+                <label th:for="category">Category</label>
+                <input type="text" th:field="*{category}" required="required"/>
+                <div th:if="${#fields.hasErrors('category')}" class="text-warning">
+                    <p th:errors="*{category}">Category Error</p>
+                </div>
+            </fieldset>
+
+            <!-- 설명 (Description) 입력 -->
+            <fieldset class="mb-3">
+                <label th:for="description">Description</label>
                 <input type="text" th:field="*{description}" required="required"/>
                 <div th:if="${#fields.hasErrors('description')}" class="text-warning">
                     <p th:errors="*{description}">Description Error</p>
                 </div>
             </fieldset>
-            
+
+            <!-- 기간 (Target Date) 입력 -->
             <fieldset class="mb-3"> 
-                <label th:for="targetDate">Target Date</label>                
-                <input type="text" th:field="*{targetDate}" id="targetDate" required="required"/>
-                <div th:if="${#fields.hasErrors('targetDate')}" class="text-warning">
-                    <p th:errors="*{targetDate}">Target Date Error</p>
-                </div>
+                <form:label path="targetDate">Target Date</form:label>				
+                <form:input type="text" path ="targetDate" required="required"/>
+                <form:errors path ="targetDate" cssClass="text-warning"/>
             </fieldset>
             
+            <fieldset class="mb-3">
+                <label th:for="targetDateFr">Target Date</label>
+                <input type="text" th:field="*{targetDateFr}" id="targetDateFr" required="required"/>
+                <div th:if="${#fields.hasErrors('targetDateFr')}" class="text-warning">
+                    <p th:errors="*{targetDateFr}">Target Date Error</p>
+                </div>
+            </fieldset>
+
+            <fieldset class="mb-3">
+                <label th:for="targetDateTo">Target Date</label>
+                <input type="text" th:field="*{targetDateTo}" id="targetDateTo" required="required"/>
+                <div th:if="${#fields.hasErrors('targetDateTo')}" class="text-warning">
+                    <p th:errors="*{targetDateTo}">Target Date Error</p>
+                </div>
+            </fieldset>
+
+            <!-- 비고 입력 -->
+            <fieldset class="mb-3">
+                <label th:for="remark">Remark</label>
+                <input type="text" th:field="*{remark}"/>
+                <div th:if="${#fields.hasErrors('remark')}" class="text-warning">
+                    <p th:errors="*{remark}">Remark Error</p>
+                </div>
+            </fieldset>
+
+            <!-- Hidden Fields -->
             <input type="hidden" th:field="*{id}"/>
             <input type="hidden" th:field="*{done}"/>
-            <input type="submit" class="btn btn-success">
+
+            <input type="submit" class="btn btn-success" value="Submit">
         </form>    
     </div>
 

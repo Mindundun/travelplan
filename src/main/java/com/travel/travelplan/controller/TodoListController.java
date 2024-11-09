@@ -33,7 +33,7 @@ public class TodoListController {
 	@RequestMapping("todolist")
 	public String listAllTodos(ModelMap model) {
 		String username = getLoggedInUsername(model);
-		
+		System.out.println("list조회Username: " + username);
 		List<Todo> todos = todolistRepository.findByUsername(username);
 		model.addAttribute("todos",todos);
 		
@@ -53,7 +53,9 @@ public class TodoListController {
 	@RequestMapping(value="add-todo", method=RequestMethod.GET)
 	public String showNewTodoPage(ModelMap model) {
 		String username = getLoggedInUsername(model);
-		Todo todo = new Todo(0, username, "", LocalDate.now().plusYears(1), false);
+        Todo todo = new Todo(0, username, "", "", "", LocalDate.now().plusYears(1), LocalDate.now().plusYears(1), false, "");
+    
+		//Todo todo = new Todo(0, username, "", LocalDate.now().plusYears(1), false);
 		model.put("todo", todo);
 		return "todo";
 	}
@@ -78,6 +80,7 @@ public class TodoListController {
 	
 	@RequestMapping("delete-todo")
 	public String deleteTodo(@RequestParam int id) {
+        System.out.println("삭제 요청 받은 ID: " + id);  // 로그 출력
 		todolistRepository.deleteById(id);
 		//todoService.deleteById(id);
 		return "redirect:todolist";

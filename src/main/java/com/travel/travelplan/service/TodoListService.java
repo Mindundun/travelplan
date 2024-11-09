@@ -22,16 +22,17 @@ public class TodoListService {
         return todos.stream().filter(predicate).toList();
     }
 
-    public void addTodo(String username, String description, LocalDate targetDate, boolean done) {
+    public void addTodo(String username, String eventName, String category, String description, LocalDate targetDateFr, LocalDate targetDateTo, boolean done, String remark) {
         // 로그 추가: addTodo 메서드 호출 시, 전달된 인자 출력
-        System.out.println("Adding new Todo:");
-        System.out.println("Username: " + username);
-        System.out.println("Description: " + description);
-        System.out.println("Target Date: " + targetDate);
-        System.out.println("Done Status: " + done);
+        // System.out.println("Adding new Todo:");
+        // System.out.println("Username: " + username);
+        // System.out.println("Description: " + description);
+        // System.out.println("Target Date: " + targetDate);
+        // System.out.println("Done Status: " + done);
 
         // 새로운 Todo 객체 생성
-        Todo todo = new Todo(++todosCount, username, description, targetDate, done);
+		Todo todo = new Todo(++todosCount, username, eventName, category, description, targetDateFr, targetDateTo, done, remark);
+
         
         // Todo 리스트에 추가
         todos.add(todo);

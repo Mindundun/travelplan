@@ -12,29 +12,40 @@ import jakarta.validation.constraints.Size;
 @Entity
 @Table(name = "todos") // 데이터베이스의 테이블 이름
 public class Todo {
-    
+
     @Id // 기본 키 설정
     @GeneratedValue(strategy = GenerationType.IDENTITY) // 자동 증가 ID
     private int id;
-    
+
     private String username;
 
-    @Size(min = 10, message = "Enter at least 10 characters")
-    private String description;
+    private String eventName; // 일정명
+    private String category;   // 카테고리
 
-    private LocalDate targetDate;
-    private boolean done;
+    @Size(min = 5, message = "Enter at least 5 characters")
+    private String description; // 내용
+
+    private LocalDate targetDateFr; // 기간 시작일
+    private LocalDate targetDateTo; // 기간 종료일
+
+    private boolean done; // 완료 여부
+    private String remark; // 비고
 
     // 기본 생성자
     public Todo() {}
 
     // 매개변수가 있는 생성자
-    public Todo(int id, String username, String description, LocalDate targetDate, boolean done) {
+    public Todo(int id, String username, String eventName, String category, String description, 
+                LocalDate targetDateFr, LocalDate targetDateTo, boolean done, String remark) {
         this.id = id;
         this.username = username;
+        this.eventName = eventName; // 일정명
+        this.category = category;   // 카테고리
         this.description = description;
-        this.targetDate = targetDate;
+        this.targetDateFr = targetDateFr;
+        this.targetDateTo = targetDateTo;
         this.done = done;
+        this.remark = remark;
     }
 
     // Getter 및 Setter 메서드
@@ -54,6 +65,22 @@ public class Todo {
         this.username = username;
     }
 
+    public String getEventName() {
+        return eventName;
+    }
+
+    public void setEventName(String eventName) {
+        this.eventName = eventName;
+    }
+
+    public String getCategory() {
+        return category;
+    }
+
+    public void setCategory(String category) {
+        this.category = category;
+    }
+
     public String getDescription() {
         return description;
     }
@@ -62,12 +89,20 @@ public class Todo {
         this.description = description;
     }
 
-    public LocalDate getTargetDate() {
-        return targetDate;
+    public LocalDate getTargetDateFr() {
+        return targetDateFr;
     }
 
-    public void setTargetDate(LocalDate targetDate) {
-        this.targetDate = targetDate;
+    public void setTargetDateFr(LocalDate targetDateFr) {
+        this.targetDateFr = targetDateFr;
+    }
+
+    public LocalDate getTargetDateTo() {
+        return targetDateTo;
+    }
+
+    public void setTargetDateTo(LocalDate targetDateTo) {
+        this.targetDateTo = targetDateTo;
     }
 
     public boolean isDone() {
@@ -78,8 +113,19 @@ public class Todo {
         this.done = done;
     }
 
+    public String getRemark() {
+        return remark;
+    }
+
+    public void setRemark(String remark) {
+        this.remark = remark;
+    }
+
     @Override
     public String toString() {
-        return "Todo [id=" + id + ", username=" + username + ", description=" + description + ", targetDate=" + targetDate + ", done=" + done + "]";
+        return "Todo [id=" + id + ", username=" + username + ", eventName=" + eventName + 
+               ", category=" + category + ", description=" + description + 
+               ", targetDateFr=" + targetDateFr + ", targetDateTo=" + targetDateTo + 
+               ", done=" + done + ", remark=" + remark + "]";
     }
 }
