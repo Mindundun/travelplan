@@ -6,7 +6,10 @@ import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
+import jakarta.persistence.JoinColumn;
+import jakarta.persistence.ManyToOne;
 import jakarta.persistence.Table;
+import jakarta.validation.constraints.NotEmpty;
 import jakarta.validation.constraints.Size;
 
 @Entity
@@ -17,12 +20,17 @@ public class Todo {
     @GeneratedValue(strategy = GenerationType.IDENTITY) // 자동 증가 ID
     private int id;
 
+    @ManyToOne //외래키
+    @JoinColumn(name = "user_id") 
+    private User user;
+
     private String username;
 
     private String eventName; // 일정명
     private String category;   // 카테고리
 
     @Size(min = 5, message = "Enter at least 5 characters")
+    @NotEmpty
     private String description; // 내용
 
     private LocalDate targetDateFr; // 기간 시작일
