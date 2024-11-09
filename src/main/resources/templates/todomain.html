@@ -13,6 +13,7 @@
 	<link rel="stylesheet" th:href="@{/css/todomain.css}">
     <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined" rel="stylesheet">
 	<!-- js -->
+    <script src="/js/todomain.js"></script>
 </head>
 <body>
     <div id="wrap">
@@ -38,8 +39,9 @@
                     <p class="name">홍길동님 환영합니다.</p>
                 </div>
                 <ul class="aside-nav">
-                    <li class="aside-menu active" data-index="1"><a href="todomain" ><span class="material-symbols-outlined" >favorite</span>전체 일정 관리</a></li>
-                    <li class="aside-menu" data-index="2"><a href="/travellist" ><span class="material-symbols-outlined">monitoring</span>여행 일정</a></li>
+                    <li class="aside-menu active" data-index="1"><a href="todomain" ><span class="material-symbols-outlined">calendar_month</span>월별 일정 관리</a></li>
+                    <li class="aside-menu" data-index="1"><a href="todolist" ><span class="material-symbols-outlined">list</span>전체 일정 목록</a></li>
+                    <li class="aside-menu" data-index="2"><a href="/travellist" ><span class="material-symbols-outlined">flight_takeoff</span>여행 일정</a></li>
                     <li class="aside-menu" data-index="2"><a href="#" ><span class="material-symbols-outlined">monitoring</span>공유된 일정</a></li>
                     <li class="aside-menu" data-index="3"><a href="#" ><span class="material-symbols-outlined">monitoring</span>팔로워 목록</a></li>
                     <li class="aside-menu" data-index="4"><a href="#" ><span class="material-symbols-outlined">person_search</span>고객센터</a></li>
@@ -55,102 +57,29 @@
             <div class="todo-right">
                 <div class="top-text">
                     <h2>일정 목록</h2>
+                    <div class="buttons color"><a href="/todolist" class="banner-btn btn">전체 일정 목록</a></div>
                     <button onclick="editMode()" class="editmode">편집</button> <!-- 편집 버튼 -->
                 </div>
-                <div class="todo-inner">
-                    <div class="todo-box">
-                        <h3 class="sticker">1월</h3>
-                        <div class="input-box">
-                            <input type="checkbox" id="chk1">
-                            <label for="chk1">민경이 이직하ddddddddddddd기</label>
-                            <input type="checkbox" id="chk2">
-                            <label for="chk2">민경이 이직하ddddddddddddd기</label>
-                        </div>
-                        <div class="edit-box">
-                            <input type="color" class="background-picker" onchange="changeBackgroundColor(this)" placeholder="배경색 선택"> <!-- 배경색 선택기 -->
-                            <input type="color" class="border-picker" onchange="changeBorderColor(this)" placeholder="테두리색 선택"> <!-- 테두리색 선택기 -->
-                        </div>
-                    </div>
-                    <div class="todo-box">
-                        <h3 class="sticker">5월</h3>
-                        <div class="input-box">
-                            <input type="checkbox" id="chk3">
-                            <label for="chk3">성식이 이직하기</label>
-                        </div>
-                        <div class="edit-box">
-                            <input type="color" class="background-picker" onchange="changeBackgroundColor(this)" placeholder="배경색 선택"> <!-- 배경색 선택기 -->
-                            <input type="color" class="border-picker" onchange="changeBorderColor(this)" placeholder="테두리색 선택"> <!-- 테두리색 선택기 -->
-                        </div>
-                    </div>
-                    <div class="todo-box">
-                        <h3 class="sticker">3월</h3>
-                        <div class="input-box">
-                            <input type="checkbox" id="chk4">
-                            <label for="chk4">뷰 공부하기</label>
-                        </div>
-                        <div class="edit-box">
-                            <input type="color" class="background-picker" onchange="changeBackgroundColor(this)" placeholder="배경색 선택"> <!-- 배경색 선택기 -->
-                            <input type="color" class="border-picker" onchange="changeBorderColor(this)" placeholder="테두리색 선택"> <!-- 테두리색 선택기 -->
-                        </div>
-                    </div>
-                    <div class="todo-box">
-                        <h3 class="sticker">4월</h3>
-                        <div class="input-box">
-                            <input type="checkbox" id="chk4">
-                            <label for="chk4">뷰 공부하기</label>
-                        </div>
-                        <div class="edit-box">
-                            <input type="color" class="background-picker" onchange="changeBackgroundColor(this)" placeholder="배경색 선택"> <!-- 배경색 선택기 -->
-                            <input type="color" class="border-picker" onchange="changeBorderColor(this)" placeholder="테두리색 선택"> <!-- 테두리색 선택기 -->
-                        </div>
-                    </div>
+            
+                <!-- 연도 이동 버튼 추가 -->
+                <div class="year-navigation">
+                    <button id="prev-year" onclick="changeYear(-1)"><< 2023</button>
+                    <span id="current-year">2024</span>
+                    <button id="next-year" onclick="changeYear(1)">2025 >></button>
                 </div>
+            
+                <!-- 연도별 일정 리스트 -->
+                <div class="todo-inner" id="todo-list">
+                    <!-- 일정 항목들이 여기에 동적으로 추가될 예정입니다. -->
+                </div>
+            
                 <hr>
                 <h3>여행 일정</h3>
-                <div class="todo-inner">
-                    <div class="todo-box">
-                        <h3 class="sticker">4월</h3>
-                        <div class="input-box">
-                            <input type="checkbox" id="chk4">
-                            <label for="chk4">뷰 공부하기</label>
-                        </div>
-                        <div class="edit-box">
-                            <input type="color" class="background-picker" onchange="changeBackgroundColor(this)" placeholder="배경색 선택">
-                            <input type="color" class="border-picker" onchange="changeBorderColor(this)" placeholder="테두리색 선택">
-                        </div>
-                    </div>
+                <div class="todo-inner" id="travel-list">
+                    <!-- 여행 일정 항목들이 여기에 동적으로 추가될 예정입니다. -->
                 </div>
-                <div class="buttons color"><a href="/todolist" class="banner-btn btn">전체 일정 목록</a></div>
             </div>
         </main>
     </div>
-
-    <script>
-       function editMode() {
-        // 모든 색상 선택기 요소를 표시/숨김
-        document.querySelectorAll('.background-picker, .border-picker').forEach(picker => {
-            picker.style.display = picker.style.display === 'none' ? 'block' : 'none';
-        });
-    }
-
-    function changeBackgroundColor(picker) {
-        // 배경색 선택기가 변경될 때 배경색 설정
-        const todoBox = picker.closest('.todo-box');
-        todoBox.style.backgroundColor = picker.value;
-    }
-
-    function changeBorderColor(picker) {
-        // 테두리색 선택기가 변경될 때 테두리 색상 설정
-        const todoBox = picker.closest('.todo-box');
-        todoBox.style.borderColor = picker.value;
-    }
-
-    // 페이지 로딩 시 색상 선택기 숨기기
-    window.onload = function() {
-        document.querySelectorAll('.background-picker, .border-picker').forEach(picker => {
-            picker.style.display = 'none';
-        });
-    }
-    </script>
 </body>
 </html>
