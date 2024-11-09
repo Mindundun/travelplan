@@ -87,4 +87,8 @@ public class MainController {
     public String todomain2() {
         return "todomain2";
     }
+    @GetMapping("/travellist")
+    public String travellist() {
+        return "travellist";
+    }
 }
