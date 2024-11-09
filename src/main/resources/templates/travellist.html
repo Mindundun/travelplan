@@ -38,8 +38,8 @@
                     <p class="name">홍길동님 환영합니다.</p>
                 </div>
                 <ul class="aside-nav">
-                    <li class="aside-menu active" data-index="1"><a href="todomain2" ><span class="material-symbols-outlined" >favorite</span>내 일정</a></li>
-                    <li class="aside-menu" data-index="2"><a href="#" ><span class="material-symbols-outlined">monitoring</span>여행 일정</a></li>
+                    <li class="aside-menu active" data-index="1"><a href="todomain" ><span class="material-symbols-outlined" >favorite</span>전체 일정 관리</a></li>
+                    <li class="aside-menu" data-index="2"><a href="/travellist" ><span class="material-symbols-outlined">monitoring</span>여행 일정</a></li>
                     <li class="aside-menu" data-index="2"><a href="#" ><span class="material-symbols-outlined">monitoring</span>공유된 일정</a></li>
                     <li class="aside-menu" data-index="3"><a href="#" ><span class="material-symbols-outlined">monitoring</span>팔로워 목록</a></li>
                     <li class="aside-menu" data-index="4"><a href="#" ><span class="material-symbols-outlined">person_search</span>고객센터</a></li>
@@ -52,10 +52,13 @@
                     <li><a href="https://www.kakaocorp.com/page/service/service/KakaoTalk" target="_blank"><img src="/img/dash-chat.png" alt="카카오톡">카카오톡</a></li>
                 </ul>
             </aside>
-            <div class="schedule-list">
-                <!-- 여기에 추가된 여행 일정 항목들이 들어갑니다. -->
-            </div>
-            <!-- 여행 상세 일정 추가 폼 -->
+            <div class="todo-right">
+                <div class="schedule-list">
+                    <!-- 일정이 추가되면 h3이라는 텍스트는 사라져야함 -->
+                    <h3>여행 리스트가 없습니다.<br>새로운 일정을 추가해보세요.</h3>
+                    <!-- 여기에 추가된 여행 일정 항목들이 들어갑니다. -->
+                </div>
+                <!-- 여행 상세 일정 추가 폼 -->
             <div class="add-schedule-form">
                 <label for="title">일정 제목</label>
                 <input type="text" id="title" placeholder="일정 제목을 입력하세요">
@@ -85,6 +88,8 @@
 
                 <button type="button" class="submit-button" id="add-schedule">추가하기</button>
             </div>
+            </div>
+            
             <!-- 체크리스트 편집 모달 -->
             <div id="checklist-modal" class="modal">
                 <div class="modal-content">
