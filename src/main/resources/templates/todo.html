@@ -72,12 +72,12 @@
                         <!-- 카테고리 입력 -->
                         <fieldset class="mb-3">
                             <label th:for="category">카테고리</label>
-                            <select id="category" name="category">
-                                <option value="회사" selected >회사</option>
-                                <option value="친구">친구</option>
-                                <option value="가족">가족</option>
-                                <option value="개인">개인</option>
-                                <option value="공유된 일정">공유된 일정</option>
+                            <select th:field="*{category}" required="required">
+                                <option value="1">개인</option>
+                                <option value="2">친구</option>
+                                <option value="3">가족</option>
+                                <option value="4">회사</option>
+                                <option value="5">공유된 일정</option>
                             </select>
                             <!-- <input type="text" th:field="*{category}" required="required"/> -->
                             <div th:if="${#fields.hasErrors('category')}" class="text-warning">

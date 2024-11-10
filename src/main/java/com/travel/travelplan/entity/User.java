@@ -59,11 +59,15 @@ public class User {
     @Column(name = "login_date")
     private LocalDateTime loginDate; // 로그인 일시
 
+    @Column(name = "is_used")
+    private Boolean isUsed; // 탈퇴 여부
+
     @PrePersist
     public void prepersist() {
         if(this.createDate == null) this.createDate = LocalDateTime.now();
         if(this.isVerify == null) this.isVerify = false;
         if(this.loginYn == null) this.loginYn = false;
+        if(this.isUsed == null) this.isUsed = true;
     }
 
 }

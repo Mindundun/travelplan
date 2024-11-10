@@ -11,4 +11,13 @@ import com.travel.travelplan.entity.Todo;
 public interface TodoListRepository extends JpaRepository<Todo, Integer> {
     // username으로 ToDo 리스트를 조회하는 메서드
     List<Todo> findByUsername(String username);
+
+    // 해당 username에 대해 총 항목 수를 조회
+    long countByUsername(String username);
+
+    // 해당 username에 대해 완료된 항목 수를 조회
+    long countByUsernameAndDone(String username, boolean done);
+
+    // 해당 username에 대해 미완료된 항목 수를 조회
+    long countByUsernameAndDoneFalse(String username);
 }

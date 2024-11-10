@@ -4,6 +4,7 @@ import java.time.LocalDate;
 import java.util.List;
 import java.util.stream.Collectors;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Controller;
@@ -18,12 +19,50 @@ import org.springframework.web.bind.annotation.SessionAttributes;
 
 import com.travel.travelplan.entity.Todo;
 import com.travel.travelplan.repository.TodoListRepository;
+import com.travel.travelplan.service.TodoListService;
 
 import jakarta.validation.Valid;
 
 @Controller // @Controller 애너테이션 추가
 @SessionAttributes("name")
 public class TodoListController {
+
+	@Autowired
+    private TodoListService todolistService;
+
+	// 내부 enum 정의(카테고리.)
+    public enum Category {
+        PERSONAL(1, "개인"),
+        FRIEND(2, "친구"),
+        FAMILY(3, "가족"),
+        WORK(4, "회사"),
+        SHARED(5, "공유된 일정");
+
+        private final int number;
+        private final String name;
+
+        Category(int number, String name) {
+            this.number = number;
+            this.name = name;
+        }
+
+        public int getNumber() {
+            return number;
+        }
+
+        public String getName() {
+            return name;
+        }
+
+        public static Category fromNumber(int number) {
+            for (Category category : Category.values()) {
+                if (category.getNumber() == number) {
+                    return category;
+                }
+            }
+            throw new IllegalArgumentException("Invalid category number: " + number);
+        }
+    }
 
     public TodoListController(TodoListRepository todolistRepository) {
 		super();
@@ -35,31 +74,64 @@ public class TodoListController {
 
 	// /todolist
 	@RequestMapping("todolist")
-	public String listAllTodos(ModelMap model) {
-		String username = getLoggedInUsername(model);
-		System.out.println("list조회Username: " + username);
-		List<Todo> todos = todolistRepository.findByUsername(username);
-		model.addAttribute("todos",todos);
-		
+	public String listAllTodos(
+		ModelMap model,
+		@RequestParam(required = false) Integer year,
+		@RequestParam(required = false) String category,
+		@RequestParam(required = false) String status,
+		@RequestParam(required = false) String eventName) {
+
+		String loggedInUsername = getLoggedInUsername(model);
+		List<Todo> todos = todolistRepository.findByUsername(loggedInUsername);
+
+		// 년도 필터링
+		if (year != null) {
+			todos = todos.stream()
+						.filter(todo -> (todo.getTargetDateFr().getYear() == year || todo.getTargetDateTo().getYear() == year))
+						.collect(Collectors.toList());
+		}
+
+		// 카테고리 필터링
+		if (category != null && !category.isEmpty()) {
+			todos = todos.stream()
+						.filter(todo -> Category.fromNumber(todo.getCategory()).getName().equals(category))
+						.collect(Collectors.toList());
+		}
+
+		// 완료 여부 필터링
+		if (status != null && !status.isEmpty()) {
+			boolean isCompleted = status.equals("완료");
+			todos = todos.stream()
+						.filter(todo -> todo.isDone() == isCompleted)
+						.collect(Collectors.toList());
+		}
+
+		// 일정명 필터링
+		if (eventName != null && !eventName.isEmpty()) {
+			todos = todos.stream()
+						.filter(todo -> todo.getEventName().contains(eventName))
+						.collect(Collectors.toList());
+		}
+
+		// 모델에 필터링된 일정 정보와 통계 추가
+		model.addAttribute("todos", todos);
+		model.addAttribute("totalCount", todos.size());
+		model.addAttribute("completedCount", todos.stream().filter(Todo::isDone).count());
+		model.addAttribute("incompleteCount", todos.stream().filter(todo -> !todo.isDone()).count());
+		model.addAttribute("year", year);  // 사용자가 선택한 년도를 모델에 추가
+		model.addAttribute("category", category);  // 사용자가 선택한 카테고리 추가
+		model.addAttribute("status", status);  // 사용자가 선택한 완료 여부 추가
+		model.addAttribute("eventName", eventName);  // 사용자가 입력한 일정명 추가
+
 		return "todolist";
 	}
-
-    // /todolist
-    // @RequestMapping("todolist") // 요청 URL
-    // public String showTodoList(ModelMap model) {
-    //     String username = getLoggedInUsername(model); // 로그인한 사용자 이름 가져오기
-    //     List<Todo> todos = todolistService.findByUsername(username); // 사용자에 대한 Todo 리스트 가져오기
-    //     model.addAttribute("todos", todos); // 모델에 todos 추가
-    //     return "todolist"; // todolist.html 파일 반환
-    // }
 
     //GET
 	@RequestMapping(value="add-todo", method=RequestMethod.GET)
 	public String showNewTodoPage(ModelMap model) {
 		String username = getLoggedInUsername(model);
-        Todo todo = new Todo(0, username, "", "", "", LocalDate.now().plusYears(1), LocalDate.now().plusYears(1), false, "");
+        Todo todo = new Todo(0, username, "", 1, "", LocalDate.now(), LocalDate.now(), false, "");
     
-		//Todo todo = new Todo(0, username, "", LocalDate.now().plusYears(1), false);
 		model.put("todo", todo);
 		return "todo";
 	}

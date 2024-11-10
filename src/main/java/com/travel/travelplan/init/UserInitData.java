@@ -18,17 +18,35 @@ public class UserInitData implements CommandLineRunner {
 
     @Override
     public void run(String... args) throws Exception {
-        User user = new User();
-        user.setUsername("admin");
-        user.setPassword(passwordEncoder.encode("1234"));
-        user.setNickName("admin");
-        user.setIsVerify(true);
-        user.setRole("ROLE_ADMIN");
-        user.setLoginYn(true);
+        User admin = new User();
+        admin.setUsername("admin");
+        admin.setPassword(passwordEncoder.encode("1234"));
+        admin.setNickName("admin");
+        admin.setIsVerify(true);
+        admin.setRole("ROLE_ADMIN");
+        admin.setLoginYn(true);
         
-        if(!userRepository.existsByUsername(user.getUsername())) {
-            userRepository.save(user);
-        }
+        userRepository.findByUsername(admin.getUsername()).ifPresentOrElse(
+            (existUser) -> {/* nothing */},
+            () -> {
+                userRepository.save(admin);
+            }
+        );
+
+        User user = new User();
+        user.setUsername("tjdtlr12349@gmail.com");
+        user.setPassword(passwordEncoder.encode("1234"));
+        user.setNickName("user");
+        user.setIsVerify(true);
+        user.setRole("ROLE_USER");
+        user.setLoginYn(true);
+
+        userRepository.findByUsername(user.getUsername()).ifPresentOrElse(
+            (existUser) -> {/* nothing */},
+            () -> {
+                userRepository.save(user);
+            }
+        );
     }
 
 }

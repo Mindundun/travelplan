@@ -59,33 +59,39 @@
                 </ul>
             </aside>
             <div class="todo-right">
-                <div class="search">
-                    <h3>년도</h3>
-                    <select name="search">
-                        <option value="2025">2025</option>
-                        <option value="2024">2024</option>
-                        <option value="2023">2023</option>
-                    </select>
-                    <h3>카테고리</h3>
-                    <select name="search">
-                        <option value="회사">회사</option>
-                        <option value="친구">친구</option>
-                        <option value="가족">가족</option>
-                        <option value="개인">개인</option>
-                        <option value="공유된 일정">공유된 일정</option>
-                    </select>
-                    <h3>구분</h3>
-                    <select name="search">
-                        <option value="완료">완료</option>
-                        <option value="미완료">미완료</option>
-                    </select>
-                    <form action="">
-                        <input type="text" name="username" placeholder="일정명을 입력하세요."/><span></span>
-                    </form>
-                    <button class="search-btn">조회</button>
-                </div>
+                <form action="todolist" method="get">
+                    <div class="search">                        
+                        <h3>년도</h3>
+                        <select name="year" onchange="this.form.submit()">
+                            <option value="2025" th:selected="${year == 2025}">2025</option>
+                            <option value="2024" th:selected="${year == 2024}" selected>2024</option>
+                            <option value="2023" th:selected="${year == 2023}">2023</option>
+                        </select>
+                        <h3>카테고리</h3>
+                        <select name="category" onchange="this.form.submit()">
+                            <option value="">전체</option>
+                            <option value="개인" th:selected="${category == '개인'}">개인</option>
+                            <option value="친구" th:selected="${category == '친구'}">친구</option>
+                            <option value="가족" th:selected="${category == '가족'}">가족</option>
+                            <option value="회사" th:selected="${category == '회사'}">회사</option>
+                            <option value="공유된 일정" th:selected="${category == '공유된 일정'}">공유된 일정</option>
+                        </select>
+                        
+                        <h3>구분</h3>
+                        <select name="status" onchange="this.form.submit()">
+                            <option value="">전체</option>
+                            <option value="완료" th:selected="${status == '완료'}">완료</option>
+                            <option value="미완료" th:selected="${status == '미완료'}">미완료</option>
+                        </select>
+                        <input type="text" name="eventName" placeholder="일정명을 입력하세요."/><span></span>
+                        <button class="search-btn" type="submit">조회</button>
+                    </div>
+                </form>
                 <div class="table-text">
-                    <h4>조회된 항목은 총<span class="number">0</span> 건입니다.<span>완료된항목0건</span>&nbsp;<span>미완료된항목0건</span></h4>
+                    <h4>조회된 항목은 총 <span class="number" th:text="${totalCount}">0</span> 건입니다.
+                        <span>완료된 항목 <span th:text="${completedCount}">0</span> 건</span>
+                        &nbsp;<span>미완료된 항목 <span th:text="${incompleteCount}">0</span> 건</span>
+                    </h4>
                     <a href="/add-todo" class="btn btn-success">리스트 추가</a>
                 </div>
                 <table class="table">
@@ -103,7 +109,8 @@
                     <tbody>
                         <tr th:attr="data-id=${todo.id}" th:each="todo : ${todos}">
                             <td class="eventName" th:text="${todo.eventName}"></td> <!-- 일정명 -->
-                            <td class="category" th:text="${todo.category}"></td> <!-- 카테고리 -->
+                            <!-- <td class="category" th:text="${todo.category}"></td> 카테고리 -->
+                            <td th:text="${T(com.travel.travelplan.controller.TodoListController.Category).fromNumber(todo.category).getName()}">카테고리</td>
                             <td class="targetDateFrom" th:text="${#temporals.format(todo.targetDateFr, 'yyyy-MM-dd')}"></td> <!-- 시작 날짜 -->
                             <td class="targetDateTo" th:text="${#temporals.format(todo.targetDateTo, 'yyyy-MM-dd')}"></td> <!-- 종료 날짜 -->
                             <td class="done" th:text="${todo.done ? '완료' : '미완료'}"></td> <!-- 완료 여부 -->

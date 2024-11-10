@@ -93,11 +93,12 @@ public class JoinService {
         );
 
         // 이메일 전송
-        boolean isSent = smtpComponent.mailSend(email, "TravelPlan 회원가입 인증 메일", "인증번호: " + randomKey);
-
-        if(!isSent){
+        try {
+            smtpComponent.mailSend(email, "TravelPlan 회원가입 인증 메일", "인증번호: " + randomKey);
+        } catch (Exception e) {
             throw new IllegalArgumentException("이메일 전송에 실패했습니다.");
         }
+
     }
 
     // 이메일 인증하기
