@@ -198,8 +198,8 @@ table td {
     padding: 30px;
     border-radius: 12px;
     width: 70%;
-    max-width: 500px;
-    height: 500px;
+    max-width: 1000px;
+    height: 700px;
     overflow-y: scroll;
     box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
     font-family: 'Arial', sans-serif;
@@ -428,3 +428,35 @@ button {
 button:hover {
     background-color: #218a92;
 }
+
+/* 댓글 입력란 스타일 */
+.modal-row textarea {
+    width: 100%;
+    padding: 10px;
+    border-radius: 5px;
+    border: 1px solid #A7C9FF;
+    background: #f0f9ff;
+    font-size: 14px;
+}
+
+/* 댓글 목록 스타일 */
+#comment-list {
+    margin-top: 10px;
+    padding: 10px;
+    border: 1px solid #A7C9FF;
+    background: #f9f9f9;
+    border-radius: 5px;
+}
+
+.comment {
+    background: #e0f7fa;
+    padding: 5px 10px;
+    margin-bottom: 5px;
+    border-radius: 15px;
+    color: #00796b;
+}
+
+
+
+
+

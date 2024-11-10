@@ -163,4 +163,84 @@ function validateEmail(email) {
 
 });
 
+// 댓글 추가 함수
+function addComment() {
+    const commentInput = document.getElementById('comment');
+    const commentText = commentInput.value.trim();
+    
+    if (commentText) {
+        const commentList = document.getElementById('comment-list');
+        const newComment = document.createElement('div');
+        newComment.classList.add('comment');
+        newComment.textContent = commentText;
+        
+        // 댓글 목록에 추가
+        commentList.appendChild(newComment);
+        
+        // 댓글 입력란 비우기
+        commentInput.value = '';
+    }
+}
+
+// 댓글 입력 시, Enter 키를 눌러서 댓글 추가
+document.getElementById('comment').addEventListener('keypress', function(e) {
+    if (e.key === 'Enter' && !e.shiftKey) {
+        e.preventDefault();
+        addComment();
+    }
+});
+
+
+
+// 날짜별 할 일 입력 테이블 생성 함수
+function generateTaskTable() {
+    const startDateInput = document.getElementById('start-date').value;
+    const endDateInput = document.getElementById('end-date').value;
+    const tableBody = document.getElementById('task-table-body');
+
+    // 테이블 내용 초기화
+    tableBody.innerHTML = '';
+
+    // 날짜 형식이 올바른지 확인
+    if (!startDateInput || !endDateInput) {
+        alert("시작일과 종료일을 모두 입력하세요.");
+        return;
+    }
+
+    const startDate = new Date(startDateInput);
+    const endDate = new Date(endDateInput);
+
+    // 시작일이 종료일보다 이후일 경우 오류 메시지
+    if (startDate > endDate) {
+        alert("시작일이 종료일보다 이후일 수 없습니다.");
+        return;
+    }
+
+    // 날짜를 하나씩 증가시키며 반복
+    for (let current = new Date(startDate); current <= endDate; current.setDate(current.getDate() + 1)) {
+        const row = document.createElement('tr');
+
+        // 날짜 셀 생성
+        const dateCell = document.createElement('td');
+        dateCell.textContent = current.toISOString().split('T')[0]; // YYYY-MM-DD 형식으로 표시
+        row.appendChild(dateCell);
+
+        // 할 일 입력란 셀 생성
+        const taskCell = document.createElement('td');
+        const taskInput = document.createElement('input');
+        taskInput.type = 'text';
+        taskInput.placeholder = '할 일을 입력하세요';
+        taskInput.classList.add("task-input");
+        taskCell.appendChild(taskInput);
+        row.appendChild(taskCell);
+
+        // 테이블에 행 추가
+        tableBody.appendChild(row);
+    }
+}
+
+// 시작일자 또는 종료일자가 변경될 때마다 테이블을 업데이트
+document.getElementById('start-date').addEventListener('change', generateTaskTable);
+document.getElementById('end-date').addEventListener('change', generateTaskTable);
+
 
