@@ -1,0 +1,57 @@
+@charset "utf-8";
+@import url('/css/common/fonts.css');
+@import url('https://webfontworld.github.io/gmarket/GmarketSans.css');
+
+/* 공통 */
+body {color: #333; font-family: 'Noto Sans KR', sans-serif, 'Gmarket Sans'; box-sizing: border-box; scroll-behavior: smooth; overflow-x: hidden;  width: 100%; height: 100vh; background: #fffefe;}
+#wrap { width: 100%; height: 100%; }
+main { display: flex; gap: 120px; width: 100%; height: 100%; padding-top: 100px; background: #f8f8f8; }
+
+.todo-right {width: 70%; height: 100%;}
+
+
+
+/* 헤더 */
+#header-box {max-width: 100%;}
+.admin-header {border-bottom: 0.5px solid #d3d3d3;}
+.admin-header:hover {height: 80px;}
+
+
+.schedule-detail {
+    padding: 20px;
+    background-color: #fff;
+    border-radius: 10px;
+    margin: 20px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+}
+
+.schedule-detail h2 {
+    font-size: 2em;
+    margin-bottom: 20px;
+}
+
+.comments-section {
+    margin-top: 20px;
+}
+
+.comments-section input {
+    width: 100%;
+    padding: 10px;
+    border: 1px solid #ddd;
+    border-radius: 5px;
+    font-size: 1em;
+    margin-bottom: 10px;
+    background-color: #f7f7f7;
+}
+
+.comment {
+    background-color: #f9f9f9;
+    padding: 10px;
+    border-radius: 5px;
+    margin-top: 10px;
+}
+
+.comment .comment-meta {
+    font-size: 0.8em;
+    color: #777;
+}

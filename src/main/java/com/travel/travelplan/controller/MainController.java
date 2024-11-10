@@ -91,4 +91,8 @@ public class MainController {
     public String travellist() {
         return "travellist";
     }
+    @GetMapping("/sharing")
+    public String sharing() {
+        return "sharing";
+    }
 }

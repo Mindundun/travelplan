@@ -1,21 +1,24 @@
-<html>
-<head>
+<!DOCTYPE html>
+<html lang="ko" xmlns:th="http://www.thymeleaf.org">
+<head> 
     <meta charset="UTF-8">
-    <meta name="viewport"content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
-    <meta http-equiv="X-UA-Compatible" content="ie=edge">
-    <title>패스트립 :: 일정 만들기</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>패스트립 :: 공유된 일정정</title>
+    <!-- <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css"> -->
     <!-- css -->
-	<link rel="icon" th:href="@{/img/favicon-01.png}">
-    <link rel="stylesheet" th:href="@{/css/common/reset.css}">
-    <link rel="stylesheet" th:href="@{/css/common/all.min.css}">
-    <link rel="stylesheet" th:href="@{/css/common/fonts.css}">
-	<link rel="stylesheet" th:href="@{/css/header-footer.css}">
-	<link rel="stylesheet" th:href="@{/css/todomain.css}">
-    <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined" rel="stylesheet">
-	<!-- js -->
-    <script src="/js/todomain.js"></script>
+   <link rel="icon" th:href="@{/img/favicon-01.png}">
+   <link rel="stylesheet" th:href="@{/css/common/reset.css}">
+   <link rel="stylesheet" th:href="@{/css/common/all.min.css}">
+   <link rel="stylesheet" th:href="@{/css/common/fonts.css}">
+   <link rel="stylesheet" th:href="@{/css/header-footer.css}">
+   <link rel="stylesheet" th:href="@{/css/sharing.css}">
+   <link href="https://unpkg.com/aos@2.3.1/dist/aos.css" rel="stylesheet">
+   <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined" rel="stylesheet">
+   <!-- js -->
+   <script src="https://unpkg.com/aos@2.3.1/dist/aos.js"></script>
 </head>
 <body>
+    <!-- Header 포함 -->
     <div id="wrap">
         <header class="admin-header">
             <div id="header-box">
@@ -27,7 +30,7 @@
                     </ul> -->
                 </div>
                 <div class="top-nav">
-                    <span class="top-btn"><a href="#">정보변경</a></span>
+                    <span class="top-btn"><a href="#">설정</a></span>
                     <span class="top-btn"><a href="/logout">로그아웃</a></span>
                 </div>
             </div>
@@ -39,10 +42,10 @@
                     <p class="name">홍길동님 환영합니다.</p>
                 </div>
                 <ul class="aside-nav">
-                    <li class="aside-menu active" data-index="1"><a href="todomain" ><span class="material-symbols-outlined">calendar_month</span>월별 일정 관리</a></li>
+                    <li class="aside-menu" data-index="1"><a href="todomain" ><span class="material-symbols-outlined">calendar_month</span>월별 일정 관리</a></li>
                     <li class="aside-menu" data-index="1"><a href="todolist" ><span class="material-symbols-outlined">list</span>전체 일정 목록</a></li>
                     <li class="aside-menu" data-index="2"><a href="/travellist" ><span class="material-symbols-outlined">flight_takeoff</span>여행 일정</a></li>
-                    <li class="aside-menu" data-index="2"><a href="/sharing" ><span class="material-symbols-outlined">monitoring</span>공유된 일정</a></li>
+                    <li class="aside-menu active" data-index="2"><a href="#" ><span class="material-symbols-outlined">monitoring</span>공유된 일정</a></li>
                     <li class="aside-menu" data-index="3"><a href="#" ><span class="material-symbols-outlined">monitoring</span>팔로워 목록</a></li>
                     <li class="aside-menu" data-index="4"><a href="#" ><span class="material-symbols-outlined">person_search</span>고객센터</a></li>
                 </ul>
@@ -55,28 +58,25 @@
                 </ul>
             </aside>
             <div class="todo-right">
-                <div class="top-text">
-                    <h2>일정 목록</h2>
-                    <div class="buttons color"><a href="/todolist" class="banner-btn btn">전체 일정 목록</a></div>
-                    <button onclick="editMode()" class="editmode">편집</button> <!-- 편집 버튼 -->
-                </div>
-            
-                <!-- 연도 이동 버튼 추가 -->
-                <div class="year-navigation">
-                    <button id="prev-year" onclick="changeYear(-1)"><< 2023</button>
-                    <span id="current-year">2024</span>
-                    <button id="next-year" onclick="changeYear(1)">2025 >></button>
-                </div>
-            
-                <!-- 연도별 일정 리스트 -->
-                <div class="todo-inner" id="todo-list">
-                    <!-- 일정 항목들이 여기에 동적으로 추가될 예정입니다. -->
-                </div>
-            
-                <hr>
-                <h3>여행 일정</h3>
-                <div class="todo-inner" id="travel-list">
-                    <!-- 여행 일정 항목들이 여기에 동적으로 추가될 예정입니다. -->
+                <!-- Share Bar (이메일로 일정 공유) -->
+                <div class="schedule-detail">
+                    <h2>1일차 일정</h2>
+                    <p>일정: 첫 번째 일정에 대한 상세 내용</p>
+                    <p>설명: 여기에 더 많은 설명을 추가할 수 있습니다. 자세한 일정 내용이 포함됩니다.</p>
+                    <div class="shared-with">
+                        <strong>공유 대상자:</strong>
+                        <ul>
+                            <li>user1@example.com</li>
+                            <li>user2@example.com</li>
+                        </ul>
+                    </div>
+                    <div class="comments-section">
+                        <input type="text" placeholder="댓글을 작성하세요..." id="comment-input-1">
+                        <div class="comment">
+                            <p><strong>user1@example.com:</strong> 일정에 대해 더 알고 싶어요!</p>
+                            <div class="comment-meta">2024-11-10 12:30</div>
+                        </div>
+                    </div>
                 </div>
             </div>
         </main>

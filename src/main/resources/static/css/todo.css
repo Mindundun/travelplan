@@ -109,3 +109,7 @@ input[type="submit"]:hover {
     margin-top: 15px;
 }
 
+
+
+
+.date-box, .category-box {display: flex; justify-content: space-between;}
