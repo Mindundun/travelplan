@@ -110,7 +110,7 @@
                         <tr th:attr="data-id=${todo.id}" th:each="todo : ${todos}">
                             <td class="eventName" th:text="${todo.eventName}"></td> <!-- 일정명 -->
                             <!-- <td class="category" th:text="${todo.category}"></td> 카테고리 -->
-                            <td th:text="${T(com.travel.travelplan.controller.TodoListController.Category).fromNumber(todo.category).getName()}">카테고리</td>
+                            <td class="category" th:text="${T(com.travel.travelplan.controller.TodoListController.Category).fromNumber(todo.category).getName()}">카테고리</td>
                             <td class="targetDateFrom" th:text="${#temporals.format(todo.targetDateFr, 'yyyy-MM-dd')}"></td> <!-- 시작 날짜 -->
                             <td class="targetDateTo" th:text="${#temporals.format(todo.targetDateTo, 'yyyy-MM-dd')}"></td> <!-- 종료 날짜 -->
                             <td class="done" th:text="${todo.done ? '완료' : '미완료'}"></td> <!-- 완료 여부 -->
