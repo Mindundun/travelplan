@@ -26,7 +26,8 @@ public class Todo {
     private String username;
 
     private String eventName; // 일정명
-    private String category;   // 카테고리
+    private int category;  // 카테고리 (1: 개인, 2: 친구, 3: 가족, 4: 회사, 5: 공유된 일정)
+
 
     @Size(min = 5, message = "Enter at least 5 characters")
     // @NotEmpty
@@ -38,11 +39,13 @@ public class Todo {
     private boolean done; // 완료 여부
     private String remark; // 비고
 
+    
+
     // 기본 생성자
     public Todo() {}
 
     // 매개변수가 있는 생성자
-    public Todo(int id, String username, String eventName, String category, String description, 
+    public Todo(int id, String username, String eventName, int category, String description, 
                 LocalDate targetDateFr, LocalDate targetDateTo, boolean done, String remark) {
         this.id = id;
         this.username = username;
@@ -53,6 +56,7 @@ public class Todo {
         this.targetDateTo = targetDateTo;
         this.done = done;
         this.remark = remark;
+
     }
 
     // Getter 및 Setter 메서드
@@ -80,11 +84,11 @@ public class Todo {
         this.eventName = eventName;
     }
 
-    public String getCategory() {
+    public int getCategory() {
         return category;
     }
 
-    public void setCategory(String category) {
+    public void setCategory(int category) {
         this.category = category;
     }
 

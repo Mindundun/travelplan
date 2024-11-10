@@ -30,6 +30,40 @@ public class TodoListController {
 	@Autowired
     private TodoListService todolistService;
 
+	// 내부 enum 정의(카테고리.)
+    public enum Category {
+        PERSONAL(1, "개인"),
+        FRIEND(2, "친구"),
+        FAMILY(3, "가족"),
+        WORK(4, "회사"),
+        SHARED(5, "공유된 일정");
+
+        private final int number;
+        private final String name;
+
+        Category(int number, String name) {
+            this.number = number;
+            this.name = name;
+        }
+
+        public int getNumber() {
+            return number;
+        }
+
+        public String getName() {
+            return name;
+        }
+
+        public static Category fromNumber(int number) {
+            for (Category category : Category.values()) {
+                if (category.getNumber() == number) {
+                    return category;
+                }
+            }
+            throw new IllegalArgumentException("Invalid category number: " + number);
+        }
+    }
+
     public TodoListController(TodoListRepository todolistRepository) {
 		super();
 		this.todolistRepository = todolistRepository; //이렇게 하면 자동적으로 결합(생성자)
@@ -42,7 +76,6 @@ public class TodoListController {
 	@RequestMapping("todolist")
 	public String listAllTodos(ModelMap model) {
 		String username = getLoggedInUsername(model);
-		System.out.println("list조회Username: " + username);
 		List<Todo> todos = todolistRepository.findByUsername(username);
 		model.addAttribute("todos",todos);
 		
@@ -55,26 +88,15 @@ public class TodoListController {
         model.addAttribute("completedCount", completedCount);
         model.addAttribute("incompleteCount", incompleteCount);
 
-
 		return "todolist";
 	}
-
-    // /todolist
-    // @RequestMapping("todolist") // 요청 URL
-    // public String showTodoList(ModelMap model) {
-    //     String username = getLoggedInUsername(model); // 로그인한 사용자 이름 가져오기
-    //     List<Todo> todos = todolistService.findByUsername(username); // 사용자에 대한 Todo 리스트 가져오기
-    //     model.addAttribute("todos", todos); // 모델에 todos 추가
-    //     return "todolist"; // todolist.html 파일 반환
-    // }
 
     //GET
 	@RequestMapping(value="add-todo", method=RequestMethod.GET)
 	public String showNewTodoPage(ModelMap model) {
 		String username = getLoggedInUsername(model);
-        Todo todo = new Todo(0, username, "", "", "", LocalDate.now().plusYears(1), LocalDate.now().plusYears(1), false, "");
+        Todo todo = new Todo(0, username, "", 1, "", LocalDate.now().plusYears(1), LocalDate.now().plusYears(1), false, "");
     
-		//Todo todo = new Todo(0, username, "", LocalDate.now().plusYears(1), false);
 		model.put("todo", todo);
 		return "todo";
 	}
