@@ -4,6 +4,7 @@ import java.time.LocalDate;
 import java.util.List;
 import java.util.stream.Collectors;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Controller;
@@ -18,12 +19,16 @@ import org.springframework.web.bind.annotation.SessionAttributes;
 
 import com.travel.travelplan.entity.Todo;
 import com.travel.travelplan.repository.TodoListRepository;
+import com.travel.travelplan.service.TodoListService;
 
 import jakarta.validation.Valid;
 
 @Controller // @Controller 애너테이션 추가
 @SessionAttributes("name")
 public class TodoListController {
+
+	@Autowired
+    private TodoListService todolistService;
 
     public TodoListController(TodoListRepository todolistRepository) {
 		super();
@@ -41,6 +46,16 @@ public class TodoListController {
 		List<Todo> todos = todolistRepository.findByUsername(username);
 		model.addAttribute("todos",todos);
 		
+		//그냥 repository 호출해도 될 것 같은데 컨트롤러-서비스-레포지토리가 국룰이니까.
+		long totalCount = todolistService.getTotalCount(username);
+        long completedCount = todolistService.getCompletedCount(username);
+        long incompleteCount = todolistService.getIncompleteCount(username);
+
+        model.addAttribute("totalCount", totalCount);
+        model.addAttribute("completedCount", completedCount);
+        model.addAttribute("incompleteCount", incompleteCount);
+
+
 		return "todolist";
 	}
 

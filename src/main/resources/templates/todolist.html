@@ -68,10 +68,10 @@
                     </select>
                     <h3>카테고리</h3>
                     <select name="search">
-                        <option value="회사">회사</option>
+                        <option value="개인">개인</option>
                         <option value="친구">친구</option>
                         <option value="가족">가족</option>
-                        <option value="개인">개인</option>
+                        <option value="회사">회사</option>
                         <option value="공유된 일정">공유된 일정</option>
                     </select>
                     <h3>구분</h3>
@@ -85,7 +85,10 @@
                     <button class="search-btn">조회</button>
                 </div>
                 <div class="table-text">
-                    <h4>조회된 항목은 총<span class="number">0</span> 건입니다.<span>완료된항목0건</span>&nbsp;<span>미완료된항목0건</span></h4>
+                    <h4>조회된 항목은 총 <span class="number" th:text="${totalCount}">0</span> 건입니다.
+                        <span>완료된 항목 <span th:text="${completedCount}">0</span> 건</span>
+                        &nbsp;<span>미완료된 항목 <span th:text="${incompleteCount}">0</span> 건</span>
+                    </h4>
                     <a href="/add-todo" class="btn btn-success">리스트 추가</a>
                 </div>
                 <table class="table">
