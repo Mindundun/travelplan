@@ -189,28 +189,37 @@ table td {
     transform: translate(-50%, -50%);
     width: 100%;
     height: 100%;
-    background-color: rgba(0, 0, 0, 0.5);
+    background-color: rgba(0, 0, 0, 0.3); /* 더 부드러운 배경 */
 }
 
 .modal-content {
-    background-color: #fff;
+    background-color: #ffffff;
     margin: 10% auto;
-    padding: 20px;
-    border-radius: 10px;
-    width: 60%;
+    padding: 30px;
+    border-radius: 12px;
+    width: 70%;
     max-width: 500px;
-    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+    height: 500px;
+    overflow-y: scroll;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+    font-family: 'Arial', sans-serif;
 }
 
 .close {
-    float: right;
-    font-size: 24px;
+    font-size: 26px;
+    font-weight: bold;
+    color: #00796b; /* 하늘색 버튼 */
     cursor: pointer;
+    transition: color 0.3s;
+}
+
+.close:hover {
+    color: #ff5252; /* hover 시 빨간색 */
 }
 
 /* 모달 내부 레이아웃 */
 .modal-row {
-    margin-bottom: 15px;
+    margin-bottom: 20px;
     display: flex;
     flex-direction: column;
 }
@@ -219,24 +228,34 @@ table td {
     display: flex;
     flex-direction: column;
     flex: 1;
-    margin-right: 10px;
+    margin-right: 15px;
 }
 
 .modal-row label {
     font-weight: bold;
-    margin-bottom: 5px;
+    margin-bottom: 8px;
+    color: #4b6a94; /* 중간 톤의 블루 */
 }
 
 .modal-row input[type="text"], 
 .modal-row input[type="date"], 
 .modal-row select {
     width: 100%;
-    padding: 8px;
-    border: 1px solid #ccc;
-    border-radius: 5px;
+    padding: 12px;
+    border: 1px solid #A7C9FF; /* 파스텔 블루 테두리 */
+    border-radius: 8px;
+    font-size: 16px;
+    background-color: #E3ECFF; /* 옅은 파란색 배경 */
+    transition: border 0.3s ease;
 }
 
-/* 한 줄에 두 개씩 배치할 때 */
+.modal-row input[type="text"]:focus,
+.modal-row input[type="date"]:focus,
+.modal-row select:focus {
+    border-color: #6B9FFF; /* 강조된 파란색 */
+    outline: none;
+}
+
 .modal-row .modal-column:last-child {
     margin-right: 0; /* 마지막 컬럼은 마진 제거 */
 }
@@ -248,41 +267,61 @@ table td {
 #email-list {
     display: flex;
     flex-wrap: wrap;
-    gap: 5px;
-    margin-top: 10px;
+    gap: 8px;
+    margin-top: 15px;
 }
 
 .email-tag {
     display: flex;
     align-items: center;
-    background-color: #e0f7fa;
-    padding: 5px 10px;
-    border-radius: 15px;
+    background-color: #b2ebf2; /* 연한 하늘색 */
+    padding: 6px 12px;
+    border-radius: 18px;
     color: #00796b;
+    font-size: 14px;
 }
 
 .remove-button {
-    margin-left: 5px;
+    margin-left: 8px;
     cursor: pointer;
     color: #ff5252;
 }
 
+.remove-button:hover {
+    color: #d32f2f; /* hover 시 색상 변화 */
+}
 
 /* 기본 레이아웃 */
 .travel-todo {
     font-family: 'Arial', sans-serif;
-    background-color: #f9f9f9;
-    padding: 20px;
-    border-radius: 10px;
-    width: 60%;
+    background-color: #f0f4f5; /* 부드러운 연하늘색 */
+    padding: 25px;
+    border-radius: 12px;
+    width: 70%;
     margin: 0 auto;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
 }
 
 h2 {
-    color: #2a7d8f;
-    font-size: 24px;
-    margin-bottom: 15px;
+    color: #00796b; /* 제목 색상 */
+    font-size: 28px;
+    margin-bottom: 20px;
+    text-align: center;
+    font-weight: bold;
 }
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 /* 여행 일정 */
 .travel-schedule .schedule-item {

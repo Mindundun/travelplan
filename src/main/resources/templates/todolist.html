@@ -62,22 +62,22 @@
                 <div class="search">
                     <h3>년도</h3>
                     <select name="search">
-                        <option value="년도">2025</option>
-                        <option value="년도">2024</option>
-                        <option value="년도">2023</option>
+                        <option value="2025">2025</option>
+                        <option value="2024">2024</option>
+                        <option value="2023">2023</option>
                     </select>
                     <h3>카테고리</h3>
                     <select name="search">
-                        <option value="구분">회사</option>
-                        <option value="구분">친구</option>
-                        <option value="구분">가족</option>
-                        <option value="구분">개인</option>
-                        <option value="구분">공유된 일정</option>
+                        <option value="회사">회사</option>
+                        <option value="친구">친구</option>
+                        <option value="가족">가족</option>
+                        <option value="개인">개인</option>
+                        <option value="공유된 일정">공유된 일정</option>
                     </select>
                     <h3>구분</h3>
                     <select name="search">
-                        <option value="구분">완료</option>
-                        <option value="구분">미완료</option>
+                        <option value="완료">완료</option>
+                        <option value="미완료">미완료</option>
                     </select>
                     <form action="">
                         <input type="text" name="username" placeholder="일정명을 입력하세요."/><span></span>
@@ -101,17 +101,18 @@
                         </tr>
                     </thead>
                     <tbody>
-                        <tr th:each="todo : ${todos}">
-                            <td th:text="${todo.eventName}"></td> <!-- 일정명 -->
-                            <td th:text="${todo.category}"></td> <!-- 카테고리 -->
-                            <td th:text="${#temporals.format(todo.targetDateFr, 'yyyy-MM-dd')}"></td> <!-- 시작 날짜 -->
-                            <td th:text="${#temporals.format(todo.targetDateTo, 'yyyy-MM-dd')}"></td> <!-- 종료 날짜 -->
-                            <td th:text="${todo.done ? '완료' : '미완료'}"></td> <!-- 완료 여부 -->
-                            <td th:text="${todo.remark}"></td> <!-- 비고 -->
+                        <tr th:attr="data-id=${todo.id}" th:each="todo : ${todos}">
+                            <td class="eventName" th:text="${todo.eventName}"></td> <!-- 일정명 -->
+                            <td class="category" th:text="${todo.category}"></td> <!-- 카테고리 -->
+                            <td class="targetDateFrom" th:text="${#temporals.format(todo.targetDateFr, 'yyyy-MM-dd')}"></td> <!-- 시작 날짜 -->
+                            <td class="targetDateTo" th:text="${#temporals.format(todo.targetDateTo, 'yyyy-MM-dd')}"></td> <!-- 종료 날짜 -->
+                            <td class="done" th:text="${todo.done ? '완료' : '미완료'}"></td> <!-- 완료 여부 -->
+                            <td class="remark" th:text="${todo.remark}"></td> <!-- 비고 -->
                             <td>
                                 <!-- 삭제 및 수정 버튼 -->
                                 <a th:href="'delete-todo?id=' + ${todo.id}" class="btn btn-warning">삭제</a>
-                                <a th:href="'update-todo?id=' + ${todo.id}" class="btn btn-success">수정</a>
+                                <!-- th:href="'update-todo?id=' + ${todo.id}" -->
+                                <a class="btn btn-success" onclick="openModalAndSettingContent(this)">수정</a>
                             </td>
                         </tr>
                     </tbody>
@@ -122,6 +123,8 @@
                 <div class="modal-content">
                     <span class="close" onclick="closeModal()">&times;</span>
                     <h2>투두 수정</h2>
+
+                    <input type="hidden" id="itemId">
             
                     <!-- 제목 입력 -->
                     <div class="modal-row">
@@ -133,7 +136,14 @@
                     <div class="modal-row">
                         <div class="modal-column">
                             <label for="category">카테고리</label>
-                            <input type="text" id="category" placeholder="카테고리">
+                            <!-- <input type="text" id="category" placeholder="카테고리"> -->
+                            <select name="search" id="category">
+                                <option value="회사">회사</option>
+                                <option value="친구">친구</option>
+                                <option value="가족">가족</option>
+                                <option value="개인">개인</option>
+                                <option value="공유된 일정">공유된 일정</option>
+                            </select>
                         </div>
                         <div class="modal-row">
                             <div class="modal-column">

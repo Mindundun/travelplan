@@ -2,14 +2,18 @@ package com.travel.travelplan.controller;
 
 import java.time.LocalDate;
 import java.util.List;
+import java.util.stream.Collectors;
 
+import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.ModelMap;
 import org.springframework.validation.BindingResult; // 추가
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.SessionAttributes;
 
 import com.travel.travelplan.entity.Todo;
@@ -94,10 +98,12 @@ public class TodoListController {
 	}
 	
 	@RequestMapping(value="update-todo", method=RequestMethod.POST)
-	public String updateTodo(ModelMap model, @Valid Todo todo, BindingResult result) {
+	@ResponseBody
+	public ResponseEntity<?> updateTodo(ModelMap model, @RequestBody @Valid Todo todo, BindingResult result) {
 		
 		if(result.hasErrors()) {
-			return "todo";
+			List<String> list = result.getAllErrors().stream().map(e -> e.getDefaultMessage()).collect(Collectors.toList());
+			return ResponseEntity.badRequest().body(list);
 		}
 		
 		String username = getLoggedInUsername(model);
@@ -105,7 +111,7 @@ public class TodoListController {
 		todolistRepository.save(todo);
 		//todoService.updateTodo(todo);
 		
-		return "redirect:todolist";
+		return ResponseEntity.ok().build();
 	}
 
     private String getLoggedInUsername(ModelMap model) {

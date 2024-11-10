@@ -9,7 +9,6 @@ import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.Table;
-import jakarta.validation.constraints.NotEmpty;
 import jakarta.validation.constraints.Size;
 
 @Entity
@@ -30,7 +29,7 @@ public class Todo {
     private String category;   // 카테고리
 
     @Size(min = 5, message = "Enter at least 5 characters")
-    @NotEmpty
+    // @NotEmpty
     private String description; // 내용
 
     private LocalDate targetDateFr; // 기간 시작일
