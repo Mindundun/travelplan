@@ -5,6 +5,7 @@ import java.util.Random;
 
 import com.travel.travelplan.entity.User;
 
+import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
@@ -45,13 +46,13 @@ public class FriendRequest {
     private Boolean isSent;
     private LocalDateTime sentDate;
 
+    @Column(name = "is_accepted", nullable = true)
     private Boolean isAccepted;
     private LocalDateTime acceptedDate;
 
     @PrePersist
     public void prePersist() {
         this.isSent = false;
-        this.isAccepted = false;
         this.token = generateToken();
     }
 

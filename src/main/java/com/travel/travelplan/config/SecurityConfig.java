@@ -49,6 +49,7 @@ public class SecurityConfig {
                 .requestMatchers("/admin/**").permitAll()// .hasRole("ADMIN")
                 .requestMatchers("/my/**").hasAnyRole("ADMIN", "USER")
 
+                .requestMatchers("/travel-book").permitAll()
                 .requestMatchers(HttpMethod.POST, "/api/v1/join").permitAll() // POST 요청은 회원가입 API만 허용
                 .requestMatchers(HttpMethod.POST, "/api/v1/send/email").permitAll() // POST 요청은 이메일 전송 API만 허용
                 .requestMatchers(HttpMethod.POST, "/api/v1/verify/email").permitAll() // POST 요청은 이메일 인증 API만 허용

@@ -27,7 +27,7 @@ public class SmtpComponent {
 
     private final String NAME = "Travel 팀";
 
-    public boolean mailSend(String to, String subject, String text) throws Exception {
+    public boolean mailSend(String to, String subject, String text) {
         log.debug("mailSend email: {}", to);
         boolean isSent = false;
 		try {
@@ -47,7 +47,7 @@ public class SmtpComponent {
 
 		} catch (Exception e) {
             log.error("메일 전송 실패", e);
-            throw new Exception("메일 전송 실패");
+            throw new RuntimeException("메일 전송 실패");
         }
 		return isSent;
     }

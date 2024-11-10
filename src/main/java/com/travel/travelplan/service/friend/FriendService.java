@@ -6,6 +6,9 @@ import java.util.Optional;
 
 import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.context.event.EventListener;
+import org.springframework.data.domain.Pageable;
+import org.springframework.retry.annotation.Backoff;
+import org.springframework.retry.annotation.Retryable;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -39,6 +42,7 @@ public class FriendService{
     private final ApplicationEventPublisher eventPublisher; 
     private final SmtpComponent smtpComponent;
 
+    // 친구 요청 프로세스
     @Transactional(rollbackFor = Exception.class)
     public void requestFriendshipProcess(HttpServletRequest req, Integer userFriendId) {
         // 대상 유저 조회
@@ -89,8 +93,13 @@ public class FriendService{
 
     }
 
+    // 친구 추가 요청 이벤트 처리 ( 메일 발송 )
     @Async
     @EventListener(classes = FriendShipRequestEvent.class)
+    @Retryable(
+        maxAttempts = 3, // 최대 재시도 횟수
+        backoff = @Backoff(delay = 1000, multiplier = 2) // 재시도 간격 (밀리초)
+    )
     public void onFriendRequest(FriendShipRequestEvent friendShipRequestEvent) {
         log.info("친구 추가 요청 이벤트 발생 : {}", friendShipRequestEvent);
 
@@ -105,24 +114,19 @@ public class FriendService{
         String subject = "친구 추가 요청";
         String text = String.format("<p>%s(%s)님으로부터 친구 추가 요청을 받았습니다. 수락하시겠습니까?</p><br><br><a href='%s/api/v1/friend/%d/accept-friend?token=%s'>수락하기</a><br><a href='%s/api/v1/friend/%d/reject-friend?token=%s'>거절하기</a>", requestUser.getNickName(), requestUser.getUsername(), url, friendRequest.getId(), friendRequest.getToken(), url, friendRequest.getId(), friendRequest.getToken());
 
-        int maxAttempts = 3;
-        for (int attempt = 1; attempt <= maxAttempts; attempt++) {
-            try {
-                if(smtpComponent.mailSend(targetEmail, subject, text)) {
-                    log.info("이메일 전송 성공");
-                    friendRequest.send();
-                    friendRequestRepository.save(friendRequest);
-                    return; // 이메일 전송 성공 시 종료
-                }
-                log.warn("이메일 전송 실패. 재시도 중... (시도 횟수: {}/{})", attempt, maxAttempts);
-            } catch (Exception e) {
-                log.error("이메일 전송 중 예외 발생. 재시도 중... (시도 횟수: {}/{})", attempt, maxAttempts, e);
-            }
+        if(smtpComponent.mailSend(targetEmail, subject, text)) {
+            log.info("이메일 전송 성공");
+            friendRequest.send();
+            friendRequestRepository.save(friendRequest);
+
+        } else {
+            log.error("이메일 전송 실패");
+            throw new IllegalArgumentException("이메일 전송에 실패했습니다.");
         }
-        throw new IllegalArgumentException("이메일 전송에 실패했습니다. 재시도 횟수 초과");
 
     }
 
+    // 친구 요청 수락 프로세스
     @Transactional(rollbackFor = Exception.class)
     public void acceptFriendshipProcess(Integer friendMailId, String token) {
         FriendRequest friendRequest = friendRequestRepository.findById(friendMailId)
@@ -163,6 +167,7 @@ public class FriendService{
         eventPublisher.publishEvent(event); // 친구 추가 완료 이벤트 발생 (뭐 대략 상대한테 다시 뭐 보내던가 할 수 는 있음)
     }
 
+    // 친구 요청 거절 프로세스
     @Transactional(rollbackFor = Exception.class)
     public void rejectFriendshipProcess(Integer friendMailId, String token) {
         FriendRequest friendRequest = friendRequestRepository.findById(friendMailId)
@@ -198,18 +203,37 @@ public class FriendService{
         throw new UnsupportedOperationException("Unimplemented method 'deleteFriend'");
     }
 
-    // 친구 목록 보기
-    public List<User> findFriendListByUser(Integer userId) {
-        return null;
+    // 유저 친구 목록 보기
+    public List<User> findFriendListByUser(Integer userId, Pageable pageable, String search) {
+        User user = userRepository.findById(userId)
+                .filter(User::getIsUsed)
+                .orElseThrow(() -> new IllegalArgumentException("해당 유저가 존재하지 않습니다."));
+
+        List<User> userList = friendRepository.findFriendListByUser(user, pageable, search);
+        return userList;
+    }
+
+    // 나의 친구 목록 보기
+    public List<User> findFriendListByUser(Pageable pageable, String search) {
+        User currentUser = getCurrentUser()
+                .orElseThrow(() -> new IllegalArgumentException("로그인이 필요합니다."));
+
+        return findFriendListByUser(currentUser.getId(), pageable, search);
     }
 
     // 친구 요청 목록 보기
-    public List<User> findFriendRequestListByUser(Integer userId) {
-        return null;
+    public List<FriendRequest> findFriendRequestListByUser(Pageable pageable, String search) {
+        User currentUser = getCurrentUser()
+                .orElseThrow(() -> new IllegalArgumentException("로그인이 필요합니다."));
+        return friendRequestRepository.findFriendRequestListByUser(currentUser, pageable, search);
     }
 
-    // 링크로 친구 추가 요청하기
-    // TODOs: Implement this method
+    // 친구 요청 받은 목록 보기
+    public List<FriendRequest> findFriendRequestReceivedListByUser(Pageable pageable, String search) {
+        User currentUser = getCurrentUser()
+                .orElseThrow(() -> new IllegalArgumentException("로그인이 필요합니다."));
+        return friendRequestRepository.findFriendRequestReceivedListByUser(currentUser, pageable, search);
+    }
 
     private Optional<User> getCurrentUser() {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
