@@ -46,7 +46,6 @@
         $(function() {
             $('#loginForm').submit(function(e) {
                 e.preventDefault();
-                debugger;
                 const username = $('#username').val();
                 const password = $('#password').val();
                 if(username.trim().length == 0) {
@@ -62,34 +61,34 @@
                     $('#password').val('');
                     return;
                 }
+                this.submit();
+                // const loginChk = $('input:checkbox[id="loginChk"]').is(":checked");
+                // // 현재 리다이렉트된 url을 현 주소에서 꺼내오는 방법
+                // const urlParams = new URLSearchParams(window.location.search);
+                // const redirectUrl = urlParams.get('redirectUrl');
 
-                const loginChk = $('input:checkbox[id="loginChk"]').is(":checked");
-                // 현재 리다이렉트된 url을 현 주소에서 꺼내오는 방법
-                const urlParams = new URLSearchParams(window.location.search);
-                const redirectUrl = urlParams.get('redirectUrl');
+                // const formData = new FormData();
+                // formData.append('username', username);
+                // formData.append('password', password);
 
-                const formData = new FormData();
-                formData.append('username', username);
-                formData.append('password', password);
-
-                axios.post('/login', formData)
-                .then(res => {
-                    const data = res.data;
-                    if(data.result == 'SUCCESS') {
-                        alert('로그인 되었습니다.');
-                        const serverRedirectUrl = data.redirectUrl;
-                        location.href = serverRedirectUrl ? serverRedirectUrl
-                                        : redirectUrl ? redirectUrl : '/';
-                    } else {
-                        alert('아이디 혹은 비밀번호가 일치하지 않습니다.');
-                        $('#username').val('');
-                        $('#password').val('');
-                        $('#username').focus();
-                    }
-                })
-                .catch(function(error) {
-                    console.log(error);
-                })
+                // axios.post('/login', formData)
+                // .then(res => {
+                //     const data = res.data;
+                //     if(data.result == 'SUCCESS') {
+                //         alert('로그인 되었습니다.');
+                //         const serverRedirectUrl = data.redirectUrl;
+                //         location.href = serverRedirectUrl ? serverRedirectUrl
+                //                         : redirectUrl ? redirectUrl : '/';
+                //     } else {
+                //         alert('아이디 혹은 비밀번호가 일치하지 않습니다.');
+                //         $('#username').val('');
+                //         $('#password').val('');
+                //         $('#username').focus();
+                //     }
+                // })
+                // .catch(function(error) {
+                //     console.log(error);
+                // })
             })
         })
     </script>

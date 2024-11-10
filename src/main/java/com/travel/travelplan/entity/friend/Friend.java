@@ -1,6 +1,8 @@
-package com.travel.travelplan.entity;
+package com.travel.travelplan.entity.friend;
 
 import java.time.LocalDateTime;
+
+import com.travel.travelplan.entity.User;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
@@ -47,7 +49,7 @@ public class Friend {
     private String friendNickName;      // 친구 닉네임
 
     @Column(name = "status")
-    private String status;              // 친구 상태
+    private Boolean status;              // 친구 상태
 
     @Column(name = "create_date")
     private LocalDateTime createDate;    // 등록일시
@@ -59,6 +61,7 @@ public class Friend {
     public void prePersist() {
         this.createDate = LocalDateTime.now();
         this.updateDate = LocalDateTime.now();
+        this.status = true;
     }
 
     @PreUpdate

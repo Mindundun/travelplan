@@ -6,7 +6,6 @@ import org.springframework.mail.javamail.MimeMessageHelper;
 import org.springframework.stereotype.Component;
 
 import jakarta.annotation.PostConstruct;
-import jakarta.mail.MessagingException;
 import jakarta.mail.internet.MimeMessage;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -28,7 +27,7 @@ public class SmtpComponent {
 
     private final String NAME = "Travel 팀";
 
-    public boolean mailSend(String to, String subject, String text) {
+    public boolean mailSend(String to, String subject, String text) throws Exception {
         log.debug("mailSend email: {}", to);
         boolean isSent = false;
 		try {
@@ -46,10 +45,9 @@ public class SmtpComponent {
 
             isSent = true; // 네이버 smtp 서버를 이용하므로 진짜로 메일발송이 성공했는지는 확인 불가능
 
-		} catch (MessagingException e) {
-			log.error("메일 전송 실패", e);
 		} catch (Exception e) {
             log.error("메일 전송 실패", e);
+            throw new Exception("메일 전송 실패");
         }
 		return isSent;
     }
