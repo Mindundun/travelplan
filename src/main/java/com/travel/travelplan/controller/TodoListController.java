@@ -74,19 +74,54 @@ public class TodoListController {
 
 	// /todolist
 	@RequestMapping("todolist")
-	public String listAllTodos(ModelMap model) {
-		String username = getLoggedInUsername(model);
-		List<Todo> todos = todolistRepository.findByUsername(username);
-		model.addAttribute("todos",todos);
-		
-		//그냥 repository 호출해도 될 것 같은데 컨트롤러-서비스-레포지토리가 국룰이니까.
-		long totalCount = todolistService.getTotalCount(username);
-        long completedCount = todolistService.getCompletedCount(username);
-        long incompleteCount = todolistService.getIncompleteCount(username);
+	public String listAllTodos(
+		ModelMap model,
+		@RequestParam(required = false) Integer year,
+		@RequestParam(required = false) String category,
+		@RequestParam(required = false) String status,
+		@RequestParam(required = false) String eventName) {
 
-        model.addAttribute("totalCount", totalCount);
-        model.addAttribute("completedCount", completedCount);
-        model.addAttribute("incompleteCount", incompleteCount);
+		String loggedInUsername = getLoggedInUsername(model);
+		List<Todo> todos = todolistRepository.findByUsername(loggedInUsername);
+
+		// 년도 필터링
+		if (year != null) {
+			todos = todos.stream()
+						.filter(todo -> (todo.getTargetDateFr().getYear() == year || todo.getTargetDateTo().getYear() == year))
+						.collect(Collectors.toList());
+		}
+
+		// 카테고리 필터링
+		if (category != null && !category.isEmpty()) {
+			todos = todos.stream()
+						.filter(todo -> Category.fromNumber(todo.getCategory()).getName().equals(category))
+						.collect(Collectors.toList());
+		}
+
+		// 완료 여부 필터링
+		if (status != null && !status.isEmpty()) {
+			boolean isCompleted = status.equals("완료");
+			todos = todos.stream()
+						.filter(todo -> todo.isDone() == isCompleted)
+						.collect(Collectors.toList());
+		}
+
+		// 일정명 필터링
+		if (eventName != null && !eventName.isEmpty()) {
+			todos = todos.stream()
+						.filter(todo -> todo.getEventName().contains(eventName))
+						.collect(Collectors.toList());
+		}
+
+		// 모델에 필터링된 일정 정보와 통계 추가
+		model.addAttribute("todos", todos);
+		model.addAttribute("totalCount", todos.size());
+		model.addAttribute("completedCount", todos.stream().filter(Todo::isDone).count());
+		model.addAttribute("incompleteCount", todos.stream().filter(todo -> !todo.isDone()).count());
+		model.addAttribute("year", year);  // 사용자가 선택한 년도를 모델에 추가
+		model.addAttribute("category", category);  // 사용자가 선택한 카테고리 추가
+		model.addAttribute("status", status);  // 사용자가 선택한 완료 여부 추가
+		model.addAttribute("eventName", eventName);  // 사용자가 입력한 일정명 추가
 
 		return "todolist";
 	}
@@ -95,7 +130,7 @@ public class TodoListController {
 	@RequestMapping(value="add-todo", method=RequestMethod.GET)
 	public String showNewTodoPage(ModelMap model) {
 		String username = getLoggedInUsername(model);
-        Todo todo = new Todo(0, username, "", 1, "", LocalDate.now().plusYears(1), LocalDate.now().plusYears(1), false, "");
+        Todo todo = new Todo(0, username, "", 1, "", LocalDate.now(), LocalDate.now(), false, "");
     
 		model.put("todo", todo);
 		return "todo";
