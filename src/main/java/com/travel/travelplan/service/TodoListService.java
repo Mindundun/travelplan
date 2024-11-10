@@ -44,10 +44,10 @@ public class TodoListService {
         return todolistRepository.countByUsernameAndDoneFalse(username); // 미완료된 일정 개수
     }
 
-    public void addTodo(String username, String eventName, int category, String description, LocalDate targetDateFr, LocalDate targetDateTo, boolean done, String remark) {
+    public void addTodo(String username, String eventName, int category, String description, LocalDate targetDateFr, LocalDate targetDateTo, boolean done, String remark, boolean priority) {
 
         // 새로운 Todo 객체 생성
-		Todo todo = new Todo(++todosCount, username, eventName, category, description, targetDateFr, targetDateTo, done, remark);
+		Todo todo = new Todo(++todosCount, username, eventName, category, description, targetDateFr, targetDateTo, done, remark, priority);
 
         // Todo 리스트에 추가
         todos.add(todo);

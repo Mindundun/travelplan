@@ -39,14 +39,14 @@ public class Todo {
     private boolean done; // 완료 여부
     private String remark; // 비고
 
-    
+    private boolean priority; // 우선순위
 
     // 기본 생성자
     public Todo() {}
 
     // 매개변수가 있는 생성자
     public Todo(int id, String username, String eventName, int category, String description, 
-                LocalDate targetDateFr, LocalDate targetDateTo, boolean done, String remark) {
+                LocalDate targetDateFr, LocalDate targetDateTo, boolean done, String remark, boolean priority) {
         this.id = id;
         this.username = username;
         this.eventName = eventName; // 일정명
@@ -56,7 +56,7 @@ public class Todo {
         this.targetDateTo = targetDateTo;
         this.done = done;
         this.remark = remark;
-
+        this.priority = priority;
     }
 
     // Getter 및 Setter 메서드
@@ -132,11 +132,19 @@ public class Todo {
         this.remark = remark;
     }
 
+    public boolean isPriority() {
+        return priority;
+    }
+
+    public void setPriority(boolean priority) {
+        this.priority = priority;
+    }
+
     @Override
     public String toString() {
         return "Todo [id=" + id + ", username=" + username + ", eventName=" + eventName + 
                ", category=" + category + ", description=" + description + 
                ", targetDateFr=" + targetDateFr + ", targetDateTo=" + targetDateTo + 
-               ", done=" + done + ", remark=" + remark + "]";
+               ", done=" + done + ", remark=" + remark + ", priority=" + priority + "]";
     }
 }

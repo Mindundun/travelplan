@@ -83,6 +83,11 @@
                             <option value="완료" th:selected="${status == '완료'}">완료</option>
                             <option value="미완료" th:selected="${status == '미완료'}">미완료</option>
                         </select>
+
+                        <!-- 우선순위 체크박스 (있음/없음) -->
+                        <h3>우선순위 표시(체크)/전체(미체크)</h3>
+                        <label><input type="checkbox" name="priority" value="true" th:checked="${priority == 'true'}"> </label>
+                        
                         <input type="text" name="eventName" placeholder="일정명을 입력하세요."/><span></span>
                         <button class="search-btn" type="submit">조회</button>
                     </div>
@@ -94,43 +99,59 @@
                     </h4>
                     <a href="/add-todo" class="btn btn-success">리스트 추가</a>
                 </div>
-                <table class="table">
-                    <thead>
-                        <tr>
-                            <th>일정명</th>
-                            <th>카테고리</th>
-                            <th>시작 날짜</th>
-                            <th>종료 날짜</th>
-                            <th>완료 여부</th>
-                            <th>비고</th>
-                            <th>삭제/수정</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        <tr th:attr="data-id=${todo.id}" th:each="todo : ${todos}">
-                            <td class="eventName" th:text="${todo.eventName}"></td> <!-- 일정명 -->
-                            <!-- <td class="category" th:text="${todo.category}"></td> 카테고리 -->
-                            <td class="category" th:text="${T(com.travel.travelplan.controller.TodoListController.Category).fromNumber(todo.category).getName()}">카테고리</td>
-                            <td class="targetDateFrom" th:text="${#temporals.format(todo.targetDateFr, 'yyyy-MM-dd')}"></td> <!-- 시작 날짜 -->
-                            <td class="targetDateTo" th:text="${#temporals.format(todo.targetDateTo, 'yyyy-MM-dd')}"></td> <!-- 종료 날짜 -->
-                            <td class="done" th:text="${todo.done ? '완료' : '미완료'}"></td> <!-- 완료 여부 -->
-                            <td class="remark" th:text="${todo.remark}"></td> <!-- 비고 -->
-                            <td>
-                                <!-- th:href="'update-todo?id=' + ${todo.id}" -->
-                                <a class="btn btn-success" onclick="openModalAndSettingContent(this)">보기</a>
-                                <!-- 삭제 및 수정 버튼 -->
-                                <a th:href="'delete-todo?id=' + ${todo.id}" class="btn btn-warning">삭제</a>
-                            </td>
-                        </tr>
-                    </tbody>
-                </table>
+                <form action="priority-done" method="post">
+                    <table class="table">
+                        <thead>
+                            <tr>
+                                <th>일정명</th>
+                                <th>카테고리</th>
+                                <th>시작 날짜</th>
+                                <th>종료 날짜</th>
+                                <th>완료 여부</th>
+                                <th>비고</th>
+                                <th>우선순위</th>
+                                <th>삭제/수정</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr th:each="todo : ${todos}">
+                                <td class="eventName" th:text="${todo.eventName}"></td> <!-- 일정명 -->
+                                <td th:text="${T(com.travel.travelplan.controller.TodoListController.Category).fromNumber(todo.category).getName()}"></td> <!-- 카테고리 -->
+                                <td class="targetDateFrom" th:text="${#temporals.format(todo.targetDateFr, 'yyyy-MM-dd')}"></td> <!-- 시작 날짜 -->
+                                <td class="targetDateTo" th:text="${#temporals.format(todo.targetDateTo, 'yyyy-MM-dd')}"></td> <!-- 종료 날짜 -->
+                                <td class="done">
+                                    <select th:name="'done_' + ${todo.id}">
+                                        <option value="false" th:selected="${todo.done == false}">미완료</option>
+                                        <option value="true" th:selected="${todo.done == true}">완료</option>
+                                    </select>
+                                </td>
+                                <td class="remark" th:text="${todo.remark}"></td> <!-- 비고 -->
+                                <td class="priority">
+                                    <!-- 체크박스 (우선순위) -->
+                                    <input type="checkbox" th:name="'priority_' + ${todo.id}" th:checked="${todo.priority}" />
+                                    
+                                    <!-- 체크박스가 체크되지 않았을 때에도 우선순위 값 'false'를 전송할 수 있도록 hidden input 추가 -->
+                                    <input type="hidden" th:name="'priority_' + ${todo.id}" th:value="false" />
+                                </td>
+                                <td>
+                                    <!-- 삭제 버튼 -->
+                                    <a th:href="'delete-todo?id=' + ${todo.id}" class="btn btn-warning">삭제</a>
+                                    <!-- 수정 버튼 -->
+                                    <a class="btn btn-success" onclick="openModalAndSettingContent(this)">수정</a>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                    <!-- 수정적용 버튼 -->
+                    <button type="submit" class="btn btn-success">우선순위/완료여부 수정적용</button>
+                </form>
                 
             </div>
             <div id="modal" class="modal">
                 <div class="modal-content">
                     <span class="close" onclick="closeModal()">&times;</span>
                     <h2>투두 수정</h2>
-            
+      
                     <input type="hidden" id="itemId">
             
                     <!-- 제목 입력 -->
@@ -143,6 +164,7 @@
                     <div class="modal-row">
                         <div class="modal-column">
                             <label for="category">카테고리</label>
+                            <!-- <input type="text" id="category" placeholder="카테고리"> -->
                             <select name="search" id="category">
                                 <option value="회사">회사</option>
                                 <option value="친구">친구</option>
@@ -151,13 +173,15 @@
                                 <option value="공유된 일정">공유된 일정</option>
                             </select>
                         </div>
-                        <div class="modal-column">
-                            <label for="start-date">시작 날짜</label>
-                            <input type="date" id="start-date">
-                        </div>
-                        <div class="modal-column">
-                            <label for="end-date">종료 날짜</label>
-                            <input type="date" id="end-date">
+                        <div class="modal-row">
+                            <div class="modal-column">
+                                <label for="start-date">시작 날짜</label>
+                                <input type="date" id="start-date">
+                            </div>
+                            <div class="modal-column">
+                                <label for="end-date">종료 날짜</label>
+                                <input type="date" id="end-date">
+                            </div>
                         </div>
                     </div>
             
@@ -176,14 +200,11 @@
                             <input type="text" id="details" placeholder="내용을 입력하세요">
                         </div>
                     </div>
-            
                     <!-- 장소 입력 -->
                     <div class="modal-row">
                         <label for="location">장소</label>
                         <input type="text" id="location" placeholder="장소를 입력하세요">
                     </div>
-            
-                    <!-- 공유 대상자 (이메일) -->
                     <div class="modal-row">
                         <label for="share-with">공유 대상자 (이메일)</label>
                         <div id="email-input-container">
@@ -192,26 +213,16 @@
                         <div id="email-list"></div>
                     </div>
             
-                    <!-- 댓글 입력란 -->
-                    <div class="modal-row">
-                        <label for="comment">댓글</label>
-                        <textarea id="comment" placeholder="댓글을 입력하세요" rows="3"></textarea>
-                    </div>
-            
-                    <!-- 댓글 목록 -->
-                    <div class="modal-row">
-                        <label>댓글 목록</label>
-                        <div id="comment-list">
-                            <!-- 댓글들이 여기에 추가됩니다. -->
-                        </div>
-                    </div>
-            
                     <!-- 저장 버튼 -->
                     <button onclick="saveTodo()">저장</button>
                 </div>
             </div>
-            
         </main>
     </div>
+
+    <script>
+
+
+    </script>
 </body>
 </html>
