@@ -21,6 +21,7 @@ import com.travel.travelplan.entity.User;
 import com.travel.travelplan.entity.friend.Friend;
 import com.travel.travelplan.entity.friend.FriendRequest;
 import com.travel.travelplan.events.friend.FriendShipAcceptEvent;
+import com.travel.travelplan.events.friend.FriendShipRejectEvent;
 import com.travel.travelplan.events.friend.FriendShipRequestEvent;
 import com.travel.travelplan.repository.UserRepository;
 import com.travel.travelplan.repository.friend.FriendRepository;
@@ -188,7 +189,7 @@ public class FriendService{
         friendRequest.reject();
         friendRequestRepository.save(friendRequest);
 
-        FriendShipRequestEvent event = new FriendShipRequestEvent(friendRequest);
+        FriendShipRejectEvent event = new FriendShipRejectEvent(friendRequest);
         eventPublisher.publishEvent(event);
     }
 

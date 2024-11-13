@@ -53,7 +53,7 @@ public class FriendRequest {
     @PrePersist
     public void prePersist() {
         this.isSent = false;
-        this.token = generateToken();
+        if(this.token == null) this.token = generateToken();
     }
 
     public void send() {

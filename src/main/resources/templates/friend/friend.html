@@ -1,0 +1,258 @@
+<!DOCTYPE html>
+<html lang="ko" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>친구 목록</title>
+    <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
+</head>
+<body>
+    <!-- 친구 목록 보기 component -->
+    <!--
+        요구 조건
+        1. 사용하는 html 에서 <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script> 추가
+    -->
+    <div th:fragment="friendList">
+        <div id="friend-component">
+
+            <ul id="friend-component_tabs">
+                <li class="tab-item active" data-tab="friendTab">친구 목록</li>
+                <li class="tab-item" data-tab="requestsTab">받은 친구 요청</li>
+                <li class="tab-item" data-tab="sentRequestsTab">보낸 친구 요청</li>
+            </ul>
+
+            <div id="friend-component_tab-content">
+                <!-- 친구목록 -->
+                <div id="friendTab" class="tab-content active">
+                    <!-- 친구 목록 아이템이 추가될 부분 -->
+                </div>
+
+                <!-- 받은 친구 요청 -->
+                <div id="requestsTab" class="tab-content">
+                    <!-- 받은 요청 아이템이 추가될 부분 -->
+                </div>
+
+                <!-- 보낸 친구 요청 -->
+                <div id="sentRequestsTab" class="tab-content">
+                    <!-- 보낸 요청 아이템이 추가될 부분 -->
+                </div>
+            </div>
+        </div>
+
+        <style>
+            /* 기본 스타일 설정 */
+            #friend-component {
+                width: 100%;
+                height: 100%;
+                display: flex;
+                flex-direction: column;
+                flex-wrap: wrap;
+                align-items: center;
+                justify-content: center;
+                overflow: hidden;
+            }
+
+            /* 탭 */
+            #friend-component #friend-component_tabs {
+                display: flex;
+                width: 100%;
+                border-bottom: 2px solid #ccc;
+            }
+
+            /* 탭 아이템 */
+            #friend-component .tab-item {
+                padding: 10px 20px;
+                cursor: pointer;
+                text-align: center;
+                flex: 1 1 auto;
+                word-wrap: break-word;
+            }
+
+            #friend-component .tab-item.active {
+                font-weight: bold;
+                color: #333;
+                border-bottom: 2px solid #333;
+            }
+
+            /* 탭 컨텐츠 */
+            #friend-component #friend-component_tab-content {
+                padding: 20px;
+                width: 100%;
+                height: 100%;
+                overflow-y: scroll; /* 스크롤바 */
+                display: block;
+                box-sizing: border-box;
+            }
+
+            #friend-component .tab-content {
+                display: none;
+            }
+
+            #friend-component .tab-content.active {
+                display: block;
+            }
+
+            /* 친구 목록 아이템 */
+            #friend-component .friend-item {
+                display: flex;
+                align-items: center;
+                padding: 10px;
+                border-bottom: 1px solid #ccc;
+            }
+
+            #friend-component .friend-item_profile {
+                width: 50px;
+                height: 50px;
+                border-radius: 50%;
+                overflow: hidden;
+            }
+
+            #friend-component .friend-item_profile img {
+                width: 100%;
+                height: 100%;
+            }
+
+            #friend-component .friend-item_text {
+                padding: 5px 10px;
+            }
+        </style>
+
+        <script>
+            // Web Component 정의: friend-item
+            class FriendItem extends HTMLElement {
+                
+                /*
+                <friend-item>
+                    <div class="friend-item">
+                        <div class="friend-item_profile">
+                            <img src="/img/person.png" alt="프로필 사진" style="background: #333">
+                        </div>
+                        <div class=friend-item_text>
+                            <p><strong>John Doe</strong></p>
+                        </div>
+                    </div>
+                </friend-item>
+                */
+
+                constructor(item) {
+                    super();
+                    // const shadow = this.attachShadow({ mode: 'open' });
+                    const container = document.createElement('div');
+                    container.classList.add('friend-item');
+                    container.innerHTML = `
+                        <div class="friend-item_profile">
+                            <img src="/img/person.png" alt="프로필 사진" style="background: #333">
+                        </div>
+                        <div class="friend-item_text">
+                            <p><strong>${item.name}</strong></p>
+                        </div>
+                    `;
+                    this.appendChild(container);
+                    // shadow.appendChild(container);
+                }
+            }
+
+            // Web Component 정의: request-item
+            class RequestItem extends HTMLElement {
+                constructor(item) {
+                    super();
+                    const shadow = this.attachShadow({ mode: 'open' });
+                    const container = document.createElement('div');
+                    container.classList.add('request-item');
+                    container.innerHTML = `
+                        <p><strong>${item.name}</strong></p>
+                        <button>수락</button>
+                        <button>거절</button>
+                    `;
+                    shadow.appendChild(container);
+                }
+            }
+
+            // 커스텀 태그 등록
+            customElements.define('friend-item', FriendItem);
+            customElements.define('request-item', RequestItem);
+
+            window.onload = function() {
+                
+                init();
+
+                const tabs = document.querySelectorAll("#friend-component #friend-component_tabs .tab-item");
+                const contents = document.querySelectorAll("#friend-component #friend-component_tab-content .tab-content");
+
+                // 1. tabs 클릭이벤트
+                tabs.forEach(tab => {
+                    tab.addEventListener("click", () => {
+                        // 1-1. 모든 탭 비활성화
+                        tabs.forEach(tab => tab.classList.remove("active"));
+
+                        // 1-2. 모든 컨텐츠 비활성화
+                        contents.forEach(content => content.classList.remove("active"));
+
+                        // 1-3. 클릭한 탭 활성화
+                        tab.classList.add("active");
+
+                        // 1-4. 클릭한 탭에 해당하는 컨텐츠 활성화
+                        document.getElementById(tab.getAttribute("data-tab")).classList.add("active");
+                    });
+                })
+            
+                // 2. 데이터 받아오기
+                const friendList = document.getElementById("friendTab");
+                const requestsList = document.getElementById("requestsTab");
+                const sentRequestsList = document.getElementById("sentRequestsTab");
+
+                // 데이터 추가 예시
+                const testItems = [
+                    { name: "John Doe" },
+                    { name: "Jane Doe" },
+                    { name: "Tom Doe" },
+                    { name: "Jerry Doe" },
+                    { name: "Alice Doe" },
+                    { name: "Bob Doe" },
+                    { name: "John Doe" },
+                    { name: "Jane Doe" },
+                    { name: "Tom Doe" },
+                    { name: "Jerry Doe" },
+                    { name: "Alice Doe" },
+                    { name: "Bob Doe" },
+                    { name: "John Doe" },
+                    { name: "Jane Doe" },
+                    { name: "Tom Doe" },
+                    { name: "Jerry Doe" },
+                    { name: "Alice Doe" },
+                    { name: "Bob Doe" },
+                ];
+
+                testItems.forEach(item => {
+                    friendList.appendChild(new FriendItem(item));
+                });
+                const testItem = { name: "John Doe" };
+                requestsList.appendChild(new RequestItem(testItem));
+
+            }
+        
+            function init() {
+                const friendComponent = document.getElementById("friend-component");
+                const friendComponentTabs = document.getElementById("friend-component_tabs");
+                const friendComponentTabContent = document.getElementById("friend-component_tab-content");
+
+                // init 작업 시작
+                const friendWrapper = friendComponent.closest('#friend-wrapper');
+                const wrapperWidth = friendWrapper.offsetWidth;
+                const wrapperHeight = friendWrapper.offsetHeight;
+
+                console.log(wrapperWidth, wrapperHeight);
+
+                friendComponent.style.width = wrapperWidth + "px";
+                friendComponent.style.height = wrapperHeight + "px";
+                
+                const tabsWidth = friendComponentTabs.offsetWidth;
+                const tabsHeight = friendComponentTabs.offsetHeight;
+
+                friendComponentTabContent.style.width = wrapperWidth + "px";
+                friendComponentTabContent.style.height = wrapperHeight - tabsHeight + "px";
+            }
+        </script>
+    </div>
+</body>
+</html>
