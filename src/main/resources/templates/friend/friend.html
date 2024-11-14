@@ -16,9 +16,9 @@
         <div id="friend-component">
 
             <ul id="friend-component_tabs">
-                <li class="tab-item active" data-tab="friendTab">친구 목록</li>
-                <li class="tab-item" data-tab="requestsTab">받은 친구 요청</li>
-                <li class="tab-item" data-tab="sentRequestsTab">보낸 친구 요청</li>
+                <li class="tab-item active" data-tab="friendTab">친구 목록 <span id="friend-count">0</span></li>
+                <li class="tab-item" data-tab="requestsTab">받은 요청 <span id="required-count">0</span></li>
+                <li class="tab-item" data-tab="sentRequestsTab">보낸 요청 <span id="request-count">0</span></li>
             </ul>
 
             <div id="friend-component_tab-content">
@@ -133,7 +133,12 @@
                     </div>
                 </friend-item>
                 */
-
+                
+                /*
+                item = {
+                    name : "존",
+                }
+                */
                 constructor(item) {
                     super();
                     // const shadow = this.attachShadow({ mode: 'open' });
@@ -252,6 +257,11 @@
                 friendComponentTabContent.style.width = wrapperWidth + "px";
                 friendComponentTabContent.style.height = wrapperHeight - tabsHeight + "px";
             }
+   
+            // TODOS
+            function getFriendItem(){}
+            functiin getRequiredItem(){}
+            function getRequestItem(){}
         </script>
     </div>
 </body>
