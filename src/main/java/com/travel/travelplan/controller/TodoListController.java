@@ -76,71 +76,71 @@ public class TodoListController {
 	private TodoListRepository todolistRepository;
 
 	@RequestMapping("todolist")
-public String listAllTodos(
-    ModelMap model,
-    @RequestParam(required = false) Integer year,
-    @RequestParam(required = false) String category,
-    @RequestParam(required = false) String status,
-    @RequestParam(required = false) boolean priority,
-    @RequestParam(required = false) String eventName) {
+	public String listAllTodos(
+		ModelMap model,
+		@RequestParam(required = false) Integer year,
+		@RequestParam(required = false) String category,
+		@RequestParam(required = false) String status,
+		@RequestParam(required = false) boolean priority,
+		@RequestParam(required = false) String eventName) {
 
-    String loggedInUsername = getLoggedInUsername(model);
-    List<Todo> todos = todolistRepository.findByUsername(loggedInUsername);
+		String loggedInUsername = getLoggedInUsername(model);
+		List<Todo> todos = todolistRepository.findByUsername(loggedInUsername);
 
-    // 년도 필터링
-    if (year != null) {
-        todos = todos.stream()
-                    .filter(todo -> (todo.getTargetDateFr().getYear() == year || todo.getTargetDateTo().getYear() == year))
-                    .collect(Collectors.toList());
-    }
+		// 년도 필터링
+		if (year != null) {
+			todos = todos.stream()
+						.filter(todo -> (todo.getTargetDateFr().getYear() == year || todo.getTargetDateTo().getYear() == year))
+						.collect(Collectors.toList());
+		}
 
-    // 카테고리 필터링
-    if (category != null && !category.isEmpty()) {
-        todos = todos.stream()
-                    .filter(todo -> Category.fromNumber(todo.getCategory()).getName().equals(category))
-                    .collect(Collectors.toList());
-    }
+		// 카테고리 필터링
+		if (category != null && !category.isEmpty()) {
+			todos = todos.stream()
+						.filter(todo -> Category.fromNumber(todo.getCategory()).getName().equals(category))
+						.collect(Collectors.toList());
+		}
 
-    // 완료 여부 필터링
-    if (status != null && !status.isEmpty()) {
-        boolean isCompleted = status.equals("완료");
-        todos = todos.stream()
-                    .filter(todo -> todo.isDone() == isCompleted)
-                    .collect(Collectors.toList());
-    }
+		// 완료 여부 필터링
+		if (status != null && !status.isEmpty()) {
+			boolean isCompleted = status.equals("완료");
+			todos = todos.stream()
+						.filter(todo -> todo.isDone() == isCompleted)
+						.collect(Collectors.toList());
+		}
 
-    // 우선순위 필터링 (체크박스가 선택된 경우)
-    if (priority) {
-        todos = todos.stream()
-                    .filter(todo -> todo.isPriority())  // 우선순위가 true인 경우만 필터링
-                    .collect(Collectors.toList());
-    }
+		// 우선순위 필터링 (체크박스가 선택된 경우)
+		if (priority) {
+			todos = todos.stream()
+						.filter(todo -> todo.isPriority())  // 우선순위가 true인 경우만 필터링
+						.collect(Collectors.toList());
+		}
 
-    // 일정명 필터링
-    if (eventName != null && !eventName.isEmpty()) {
-        todos = todos.stream()
-                    .filter(todo -> todo.getEventName().contains(eventName))
-                    .collect(Collectors.toList());
-    }
+		// 일정명 필터링
+		if (eventName != null && !eventName.isEmpty()) {
+			todos = todos.stream()
+						.filter(todo -> todo.getEventName().contains(eventName))
+						.collect(Collectors.toList());
+		}
 
-    // 우선순위가 체크된 항목을 먼저 표시하고, 그 후에 시작날짜와 일정명으로 정렬
-    todos.sort(Comparator.comparing((Todo todo) -> !todo.isPriority())  // 우선순위가 true인 항목을 먼저
-            .thenComparing(Todo::getTargetDateFr)  // 시작 날짜로 정렬
-            .thenComparing(Todo::getEventName));  // 일정명으로 정렬
+		// 우선순위가 체크된 항목을 먼저 표시하고, 그 후에 시작날짜와 일정명으로 정렬
+		todos.sort(Comparator.comparing((Todo todo) -> !todo.isPriority())  // 우선순위가 true인 항목을 먼저
+				.thenComparing(Todo::getTargetDateFr)  // 시작 날짜로 정렬
+				.thenComparing(Todo::getEventName));  // 일정명으로 정렬
 
-    // 모델에 필터링된 일정 정보와 통계 추가
-    model.addAttribute("todos", todos);
-    model.addAttribute("totalCount", todos.size());
-    model.addAttribute("completedCount", todos.stream().filter(Todo::isDone).count());
-    model.addAttribute("incompleteCount", todos.stream().filter(todo -> !todo.isDone()).count());
-    model.addAttribute("year", year);  // 사용자가 선택한 년도를 모델에 추가
-    model.addAttribute("category", category);  // 사용자가 선택한 카테고리 추가
-    model.addAttribute("status", status);  // 사용자가 선택한 완료 여부 추가
-    model.addAttribute("priority", priority);  // 사용자가 입력한 우선순위 추가
-    model.addAttribute("eventName", eventName);  // 사용자가 입력한 일정명 추가
+		// 모델에 필터링된 일정 정보와 통계 추가
+		model.addAttribute("todos", todos);
+		model.addAttribute("totalCount", todos.size());
+		model.addAttribute("completedCount", todos.stream().filter(Todo::isDone).count());
+		model.addAttribute("incompleteCount", todos.stream().filter(todo -> !todo.isDone()).count());
+		model.addAttribute("year", year);  // 사용자가 선택한 년도를 모델에 추가
+		model.addAttribute("category", category);  // 사용자가 선택한 카테고리 추가
+		model.addAttribute("status", status);  // 사용자가 선택한 완료 여부 추가
+		model.addAttribute("priority", priority);  // 사용자가 입력한 우선순위 추가
+		model.addAttribute("eventName", eventName);  // 사용자가 입력한 일정명 추가
 
-    return "todolist";
-}
+		return "todolist";
+	}
 
 
     //GET
