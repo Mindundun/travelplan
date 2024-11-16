@@ -9,6 +9,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -87,4 +88,17 @@ public class FriendShipRestController {
         return ResponseEntity.ok().build();
     }
 
+    @PutMapping("/{id}/accept-friend")
+    public ResponseEntity<Void> acceptRequest(@PathVariable("id") Integer requestId, @RequestParam("token") String token) {
+        log.info("acceptFriendshipProcess");
+        friendService.acceptFriendshipProcess(requestId, token);
+        return ResponseEntity.ok().build();
+    }
+
+    @PutMapping("/{id}/reject-friend")
+    public ResponseEntity<Void> rejectRequest(@PathVariable("id") Integer requestId, @RequestParam("token") String token) {
+        log.info("rejectFriendshipProcess");
+        friendService.rejectFriendshipProcess(requestId, token);
+        return ResponseEntity.ok().build();
+    }
 }

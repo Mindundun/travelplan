@@ -54,6 +54,7 @@
                 align-items: center;
                 justify-content: center;
                 overflow: hidden;
+                position: relative;
             }
 
             /* 탭 */
@@ -97,55 +98,54 @@
             }
 
             /* 친구 목록 아이템 */
-            #friend-component .friend-item {
+            #friend-component .friend-item, #friend-component .required-item {
                 display: flex;
                 align-items: center;
                 padding: 10px;
                 border-bottom: 1px solid #ccc;
             }
 
-            #friend-component .friend-item_profile {
+            #friend-component .friend-item_profile, #friend-component .required-item_profile {
                 width: 50px;
                 height: 50px;
                 border-radius: 50%;
                 overflow: hidden;
             }
 
-            #friend-component .friend-item_profile img {
+            #friend-component .friend-item_profile img, #friend-component .required-item_profile img {
                 width: 100%;
                 height: 100%;
             }
 
-            #friend-component .friend-item_text {
+            #friend-component .friend-item_text, #friend-component .required-item_text {
                 padding: 5px 10px;
             }
         </style>
 
         <!-- Web Component -->
         <script>
-            // Web Component 정의: friend-item
+            // Web Component 정의: friend-item (친구 목록)
             class FriendItem extends HTMLElement {
-                
-                /*
-                <friend-item>
-                    <div class="friend-item">
-                        <div class="friend-item_profile">
-                            <img src="/img/person.png" alt="프로필 사진" style="background: #333">
-                        </div>
-                        <div class=friend-item_text>
-                            <p><strong>John Doe</strong></p>
-                        </div>
-                    </div>
-                </friend-item>
-                */
-                
-                /*
-                item = {
-                    
-                }
-                */
                 constructor(item) {
                     super();
+                    // 인스턴스 객체 선언
+                    this.idx = item.id;
+                    this.nickName = item.nickName;
+
+                    // html 생성
+                    /*
+                    <friend-item>
+                        <div class="friend-item">
+                            <div class="friend-item_profile">
+                                <img src="/img/person.png" alt="프로필 사진" style="background: #333">
+                            </div>
+                            <div class=friend-item_text>
+                                <p><strong>John Doe</strong></p>
+                            </div>
+                        </div>
+                    </friend-item>
+                    */
+
                     // const shadow = this.attachShadow({ mode: 'open' });
                     const container = document.createElement('div');
                     container.classList.add('friend-item');
@@ -154,15 +154,130 @@
                             <img src="/img/person.png" alt="프로필 사진" style="background: #333">
                         </div>
                         <div class="friend-item_text">
-                            <p><strong>${item.nickName}</strong></p>
+                            <p><strong>${this.nickName}</strong></p>
                         </div>
                     `;
                     this.appendChild(container);
                     // shadow.appendChild(container);
+
+                    // 이벤트 등록
+                    container.addEventListener('click', (e) => this.detail());
+                }
+
+                detail() {
+                    alert("상세보기" + this.idx + " " + this.nickName);
                 }
             }
 
-            // Web Component 정의: request-item
+            // Web Component 정의: required-item (요청 받은 목록)
+            class RequiredItem extends HTMLElement {
+                constructor(item) {
+                    super();
+
+                    // 인스턴스 객체 선언
+                    this.idx = item.id;
+                    this.user = item.requestUser;
+                    this.token = item.token;
+                    this.hasThrottled = false;
+
+                    const container = document.createElement('div');
+                    container.classList.add('required-item');
+                    container.innerHTML = `
+                        <div class="friend-item_profile">
+                            <img src="/img/person.png" alt="프로필 사진" style="background: #333">
+                        </div>
+                        <div class="friend-item_text">
+                            <p><strong>${this.user.nickName}</strong></p>
+                        </div>
+                    `;
+                    this.appendChild(container);
+
+                    // 이벤트 등록
+                    container.addEventListener('click', (e) => this.detail());
+                }
+
+                detail() {
+                    // 상세 보기 화면 생성
+                    const detailDialog = document.createElement('div');
+                    detailDialog.classList.add('detail-dialog');
+                    detailDialog.innerHTML = `
+                        <div class="detail-content">
+                            <p>상세 정보</p>
+                            <p>사용자 ID: ${this.user.username}</p>
+                            <p>사용자 닉네임: ${this.user.nickName}</p>
+                            <button class="acceptBtn">수락</button>
+                            <button class="rejectBtn">거절</button>
+                            <button class="closeBtn">닫기</button>
+                        </div>
+                    `;
+
+                    // 다이얼로그 스타일 추가
+                    detailDialog.style.position = 'absolute';
+                    detailDialog.style.width = '80%';
+                    detailDialog.style.height = '80%';
+                    detailDialog.style.top = '50%';
+                    detailDialog.style.left = '50%';
+                    detailDialog.style.transform = 'translate(-50%, -50%)';
+                    detailDialog.style.border = '1px solid #ccc';
+                    detailDialog.style.backgroundColor = '#fff';
+                    detailDialog.style.padding = '20px';
+                    detailDialog.style.boxShadow = '0 4px 6px rgba(0, 0, 0, 0.1)';
+
+                    const friendComponent = document.getElementById("friend-component");
+                    friendComponent.appendChild(detailDialog);
+
+                    // 수락/거절/닫기 버튼 이벤트 등록
+                    detailDialog.querySelector('.acceptBtn').addEventListener('click', () => {
+                        this.accept();
+                        friendComponent.removeChild(detailDialog); // 다이얼로그 닫기
+                    });
+                    detailDialog.querySelector('.rejectBtn').addEventListener('click', () => {
+                        this.reject();
+                        friendComponent.removeChild(detailDialog); // 다이얼로그 닫기
+                    });
+                    detailDialog.querySelector('.closeBtn').addEventListener('click', () => {
+                        friendComponent.removeChild(detailDialog); // 다이얼로그 닫기
+                    });
+                }
+
+                accept() {
+                    if(this.hasThrottled) return;
+                    this.hasThrottled = true;
+
+                    axios.put(`/api/v1/friend/${this.idx}/accept-friend?token=${this.token}`)
+                    .then(res => {
+                        alert("요청이 수락되었습니다.");
+                        window.location.reload(); // 새로고침
+                    })
+                    .catch(e => {
+                        alert("요청 수락에 실패했습니다. 잠시후 다시 시도해주세요.");
+                        console.error(e);
+                    })
+                    .finally(() => {
+                        this.hasThrottled = false;
+                    });
+                }
+
+                reject() {
+                    if(this.hasThrottled) return;
+                    this.hasThrottled = true;
+
+                    axios.put(`/api/v1/friend/${this.idx}/reject-friend?token=${this.token}`)
+                    .then(res => {
+                        alert("요청이 거절되었습니다.");
+                        window.location.reload();
+                    })
+                    .catch(e => {
+                        alert("요청 거절에 실패했습니다. 잠시후 다시 시도해주세요.");
+                        console.error(e);
+                    })
+                    .finally(() => {
+                        this.hasThrottled = false;
+                    });
+                }
+            }
+
+            // Web Component 정의: request-item (요청 한 목록)
             class RequestItem extends HTMLElement {
                 constructor(item) {
                     super();
@@ -171,8 +286,6 @@
                     container.classList.add('request-item');
                     container.innerHTML = `
                         <p><strong>${item.name}</strong></p>
-                        <button>수락</button>
-                        <button>거절</button>
                     `;
                     shadow.appendChild(container);
                 }
@@ -180,6 +293,7 @@
 
             // 커스텀 태그 등록
             customElements.define('friend-item', FriendItem);
+            customElements.define('required-item', RequiredItem);
             customElements.define('request-item', RequestItem);
         </script>
 
@@ -312,7 +426,7 @@
                     // 중복 제거 후 신규 데이터 추가
                     const newRequiredList = requiredList.filter(item => !requiredItem.some(existingItem => existingItem.id === item.id));
                     requiredItem.push(...newRequiredList);
-                    // appendFriendItem(newFriendList);
+                    appendRequiredItem(newRequiredList);
 
                     requiredPage++;
                 })
@@ -335,14 +449,14 @@
             }
 
             function appendRequiredItem(items){
-                const requiredList = document.getElementById("requestsTab");
+                const requiredList = document.getElementById("requiredTab");
                 items.forEach(item => {
-                    requiredList.appendChild(new RequestItem(item));
+                    requiredList.appendChild(new RequiredItem(item));
                 });
             }
 
             function appendRequestItem(items){
-                const requestList = document.getElementById("sentRequestsTab");
+                const requestList = document.getElementById("requestTab");
                 items.forEach(item => {
                     requestList.appendChild(new RequestItem(item));
                 });

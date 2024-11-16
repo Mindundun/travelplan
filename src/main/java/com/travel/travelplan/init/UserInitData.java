@@ -47,6 +47,20 @@ public class UserInitData implements CommandLineRunner {
                 userRepository.save(user);
             }
         );
+        User user2 = new User();
+        user2.setUsername("test1");
+        user2.setPassword(passwordEncoder.encode("1234"));
+        user2.setNickName("test1");
+        user2.setIsVerify(true);
+        user2.setRole("ROLE_USER");
+        user2.setLoginYn(true);
+
+        userRepository.findByUsername(user2.getUsername()).ifPresentOrElse(
+            (existUser) -> {/* nothing */},
+            () -> {
+                userRepository.save(user2);
+            }
+        );
     }
 
 }
