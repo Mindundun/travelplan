@@ -11,6 +11,10 @@
     <!--
         요구 조건
         1. 사용하는 html 에서 <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script> 추가
+        2. data-width="600" data-height="400" 추가
+            <div id="friend-wrapper" data-width="600" data-height="400" style="width: 600px; height: 400px; overflow: hidden;">
+                <div th:insert="~{friend/friend :: friendList}"></div>
+            </div>
     -->
     <div th:fragment="friendList">
         <div id="friend-component">
@@ -218,8 +222,8 @@
 
                 // init 작업 시작
                 const friendWrapper = friendComponent.closest('#friend-wrapper');
-                const wrapperWidth = friendWrapper.getAttribute("data-width");
-                const wrapperHeight = friendWrapper.getAttribute("data-height");
+                const wrapperWidth = friendWrapper.getAttribute("data-width") || 600;       // 기본값 600
+                const wrapperHeight = friendWrapper.getAttribute("data-height") || 400;     // 기본값 400
                 // const wrapperWidth = friendWrapper.offsetWidth;
                 // const wrapperHeight = friendWrapper.offsetHeight;
 
