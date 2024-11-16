@@ -17,6 +17,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import com.travel.travelplan.components.SmtpComponent;
 import com.travel.travelplan.dto.CustomUserDetails;
+import com.travel.travelplan.dto.PagingDto;
 import com.travel.travelplan.entity.User;
 import com.travel.travelplan.entity.friend.Friend;
 import com.travel.travelplan.entity.friend.FriendRequest;
@@ -134,8 +135,12 @@ public class FriendService{
                 .filter(f -> f.getToken().equals(token))
                 .orElseThrow(() -> new IllegalArgumentException("유효하지 않은 요청입니다."));
 
-        if(friendRequest.getIsAccepted()) {
+        if(friendRequest.getIsAccepted() != null && friendRequest.getIsAccepted()) {
             throw new IllegalArgumentException("이미 수락된 요청입니다.");
+        }
+
+        if(friendRequest.getIsAccepted() != null && !friendRequest.getIsAccepted()) {
+            throw new IllegalArgumentException("이미 거절된 요청입니다.");
         }
 
         User loginUser = getCurrentUser()
@@ -205,17 +210,24 @@ public class FriendService{
     }
 
     // 유저 친구 목록 보기
-    public List<User> findFriendListByUser(Integer userId, Pageable pageable, String search) {
+    public PagingDto<User> findFriendListByUser(Integer userId, Pageable pageable, String search) {
         User user = userRepository.findById(userId)
                 .filter(User::getIsUsed)
                 .orElseThrow(() -> new IllegalArgumentException("해당 유저가 존재하지 않습니다."));
 
         List<User> userList = friendRepository.findFriendListByUser(user, pageable, search);
-        return userList;
+        Integer totalSize = friendRepository.countFriendListByUser(user, search);
+
+        PagingDto<User> result = new PagingDto<>();
+        result.setTotalCount(totalSize);
+        result.setList(userList);
+
+        log.debug("result : {}", result);
+        return result;
     }
 
     // 나의 친구 목록 보기
-    public List<User> findFriendListByUser(Pageable pageable, String search) {
+    public PagingDto<User> findFriendListByUser(Pageable pageable, String search) {
         User currentUser = getCurrentUser()
                 .orElseThrow(() -> new IllegalArgumentException("로그인이 필요합니다."));
 
@@ -223,17 +235,29 @@ public class FriendService{
     }
 
     // 친구 요청 목록 보기
-    public List<FriendRequest> findFriendRequestListByUser(Pageable pageable, String search) {
+    public PagingDto<FriendRequest> findFriendRequestListByUser(Pageable pageable, String search) {
         User currentUser = getCurrentUser()
                 .orElseThrow(() -> new IllegalArgumentException("로그인이 필요합니다."));
-        return friendRequestRepository.findFriendRequestListByUser(currentUser, pageable, search);
+
+        List<FriendRequest> list = friendRequestRepository.findFriendRequestListByUser(currentUser, pageable, search);
+        Integer totalSize = friendRequestRepository.countFriendRequestListByUser(currentUser, search);
+        PagingDto<FriendRequest> result = new PagingDto<>();
+        result.setTotalCount(totalSize);
+        result.setList(list);
+        return result;
     }
 
     // 친구 요청 받은 목록 보기
-    public List<FriendRequest> findFriendRequestReceivedListByUser(Pageable pageable, String search) {
+    public PagingDto<FriendRequest> findFriendRequestReceivedListByUser(Pageable pageable, String search) {
         User currentUser = getCurrentUser()
                 .orElseThrow(() -> new IllegalArgumentException("로그인이 필요합니다."));
-        return friendRequestRepository.findFriendRequestReceivedListByUser(currentUser, pageable, search);
+
+        List<FriendRequest> list = friendRequestRepository.findFriendRequestReceivedListByUser(currentUser, pageable, search);
+        Integer totalSize = friendRequestRepository.countFriendRequestReceivedListByUser(currentUser, search);
+        PagingDto<FriendRequest> result = new PagingDto<>();
+        result.setTotalCount(totalSize);
+        result.setList(list);
+        return result;
     }
 
     private Optional<User> getCurrentUser() {

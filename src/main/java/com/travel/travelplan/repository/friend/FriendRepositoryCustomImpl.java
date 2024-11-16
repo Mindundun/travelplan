@@ -57,4 +57,23 @@ public class FriendRepositoryCustomImpl implements FriendRepositoryCustom {
         return list;
     }
 
+    @Override
+    public Integer countFriendListByUser(User user, String search) {
+        QFriend qFriend = QFriend.friend;
+        QUser qUser = QUser.user;
+
+        BooleanBuilder builder = new BooleanBuilder();
+        builder.and(qFriend.userOwn.eq(user));
+        builder.and(qFriend.userFriend.isUsed.eq(true));
+
+        if (search != null && !search.isEmpty()) {
+            builder.and(qUser.nickName.contains(search));
+        }
+
+        return queryFactory.select(qFriend)
+                .from(qFriend)
+                .join(qUser).on(qFriend.userFriend.eq(qUser)).fetchJoin()
+                .where(builder)
+                .fetch().size();
+    }
 }

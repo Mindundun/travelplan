@@ -17,8 +17,8 @@
 
             <ul id="friend-component_tabs">
                 <li class="tab-item active" data-tab="friendTab">친구 목록 <span id="friend-count">0</span></li>
-                <li class="tab-item" data-tab="requestsTab">받은 요청 <span id="required-count">0</span></li>
-                <li class="tab-item" data-tab="sentRequestsTab">보낸 요청 <span id="request-count">0</span></li>
+                <li class="tab-item" data-tab="requiredTab">받은 요청 <span id="required-count">0</span></li>
+                <li class="tab-item" data-tab="requestTab">보낸 요청 <span id="request-count">0</span></li>
             </ul>
 
             <div id="friend-component_tab-content">
@@ -28,12 +28,12 @@
                 </div>
 
                 <!-- 받은 친구 요청 -->
-                <div id="requestsTab" class="tab-content">
+                <div id="requiredTab" class="tab-content">
                     <!-- 받은 요청 아이템이 추가될 부분 -->
                 </div>
 
                 <!-- 보낸 친구 요청 -->
-                <div id="sentRequestsTab" class="tab-content">
+                <div id="requestTab" class="tab-content">
                     <!-- 보낸 요청 아이템이 추가될 부분 -->
                 </div>
             </div>
@@ -76,15 +76,15 @@
 
             /* 탭 컨텐츠 */
             #friend-component #friend-component_tab-content {
-                padding: 20px;
+                /* padding: 10px; */
                 width: 100%;
                 height: 100%;
-                overflow-y: scroll; /* 스크롤바 */
                 display: block;
                 box-sizing: border-box;
             }
 
             #friend-component .tab-content {
+                overflow-y: auto; /* 스크롤바 */
                 display: none;
             }
 
@@ -117,6 +117,7 @@
             }
         </style>
 
+        <!-- Web Component -->
         <script>
             // Web Component 정의: friend-item
             class FriendItem extends HTMLElement {
@@ -136,7 +137,7 @@
                 
                 /*
                 item = {
-                    name : "존",
+                    
                 }
                 */
                 constructor(item) {
@@ -149,7 +150,7 @@
                             <img src="/img/person.png" alt="프로필 사진" style="background: #333">
                         </div>
                         <div class="friend-item_text">
-                            <p><strong>${item.name}</strong></p>
+                            <p><strong>${item.nickName}</strong></p>
                         </div>
                     `;
                     this.appendChild(container);
@@ -176,77 +177,53 @@
             // 커스텀 태그 등록
             customElements.define('friend-item', FriendItem);
             customElements.define('request-item', RequestItem);
+        </script>
 
-            window.onload = function() {
-                
-                init();
+        <script>
+            let friendItem = []; // 전역 변수 선언
+            let requiredItem = []; // 전역 변수 선언
+            let requestItem = []; // 전역 변수 선언
 
-                const tabs = document.querySelectorAll("#friend-component #friend-component_tabs .tab-item");
-                const contents = document.querySelectorAll("#friend-component #friend-component_tab-content .tab-content");
+            let hasThrottledFriend = false;
+            let hasThrottledRequired = false;
+            let hasThrottledRequest = false;
 
-                // 1. tabs 클릭이벤트
-                tabs.forEach(tab => {
-                    tab.addEventListener("click", () => {
-                        // 1-1. 모든 탭 비활성화
-                        tabs.forEach(tab => tab.classList.remove("active"));
+            let friendScrollTimer = null;
+            let requiredScrollTimer = null;
+            let requestScrollTimer = null;
 
-                        // 1-2. 모든 컨텐츠 비활성화
-                        contents.forEach(content => content.classList.remove("active"));
+            let friendScrollEvent = true;
+            let requiredScrollEvent = true;
+            let requestScrollEvent = true;
 
-                        // 1-3. 클릭한 탭 활성화
-                        tab.classList.add("active");
+            let friendPage = 0;
+            let requiredPage = 0;
+            let requestPage = 0;
 
-                        // 1-4. 클릭한 탭에 해당하는 컨텐츠 활성화
-                        document.getElementById(tab.getAttribute("data-tab")).classList.add("active");
-                    });
-                })
-            
-                // 2. 데이터 받아오기
-                const friendList = document.getElementById("friendTab");
-                const requestsList = document.getElementById("requestsTab");
-                const sentRequestsList = document.getElementById("sentRequestsTab");
+            const pageSize = 100;
 
-                // 데이터 추가 예시
-                const testItems = [
-                    { name: "John Doe" },
-                    { name: "Jane Doe" },
-                    { name: "Tom Doe" },
-                    { name: "Jerry Doe" },
-                    { name: "Alice Doe" },
-                    { name: "Bob Doe" },
-                    { name: "John Doe" },
-                    { name: "Jane Doe" },
-                    { name: "Tom Doe" },
-                    { name: "Jerry Doe" },
-                    { name: "Alice Doe" },
-                    { name: "Bob Doe" },
-                    { name: "John Doe" },
-                    { name: "Jane Doe" },
-                    { name: "Tom Doe" },
-                    { name: "Jerry Doe" },
-                    { name: "Alice Doe" },
-                    { name: "Bob Doe" },
-                ];
-
-                testItems.forEach(item => {
-                    friendList.appendChild(new FriendItem(item));
-                });
-                const testItem = { name: "John Doe" };
-                requestsList.appendChild(new RequestItem(testItem));
-
-            }
-        
             function init() {
+                console.log("0. 초기화 시작");
+                componentSizeInit();    // 컨포넌트 사이즈 스캔
+                tabEventInit();         // 탭 이벤트 등록
+                addScrollEvent();       // 스크롤 이벤트 등록
+                console.log("0. 초기화 종료");
+            }
+
+            function componentSizeInit() {
+                console.log("1. 컴포넌트 사이즈 초기화");
                 const friendComponent = document.getElementById("friend-component");
                 const friendComponentTabs = document.getElementById("friend-component_tabs");
                 const friendComponentTabContent = document.getElementById("friend-component_tab-content");
 
                 // init 작업 시작
                 const friendWrapper = friendComponent.closest('#friend-wrapper');
-                const wrapperWidth = friendWrapper.offsetWidth;
-                const wrapperHeight = friendWrapper.offsetHeight;
+                const wrapperWidth = friendWrapper.getAttribute("data-width");
+                const wrapperHeight = friendWrapper.getAttribute("data-height");
+                // const wrapperWidth = friendWrapper.offsetWidth;
+                // const wrapperHeight = friendWrapper.offsetHeight;
 
-                console.log(wrapperWidth, wrapperHeight);
+                console.log(`1. 사이즈 스캔 결과 width = ${wrapperWidth}, height = ${wrapperHeight}`);
 
                 friendComponent.style.width = wrapperWidth + "px";
                 friendComponent.style.height = wrapperHeight + "px";
@@ -256,12 +233,192 @@
 
                 friendComponentTabContent.style.width = wrapperWidth + "px";
                 friendComponentTabContent.style.height = wrapperHeight - tabsHeight + "px";
+
+                friendComponentTabContent.querySelectorAll(".tab-content").forEach(content => {
+                    // content.style.width = wrapperWidth + "px";
+                    content.style.height = wrapperHeight - tabsHeight + "px";
+                });
+                console.log("1. 컴포넌트 사이즈 초기화 종료");
             }
-   
-            // TODOS
-            function getFriendItem(){}
-            function getRequiredItem(){}
+
+            function tabEventInit() {
+                console.log("2. 탭 이벤트 등록");
+                const tabs = document.querySelectorAll("#friend-component #friend-component_tabs .tab-item");
+                const contents = document.querySelectorAll("#friend-component #friend-component_tab-content .tab-content");
+
+                // 1. tabs 클릭이벤트
+                tabs.forEach(tab => {
+                    tab.addEventListener("click", () => {
+                        console.log("탭 클릭 이벤트 발생");
+                        // 1-1. 모든 탭 비활성화
+                        tabs.forEach(tab => tab.classList.remove("active"));
+                        
+                        // 1-2. 모든 컨텐츠 비활성화
+                        contents.forEach(content => content.classList.remove("active"));
+
+                        // 1-3. 클릭한 탭 활성화
+                        tab.classList.add("active");
+                        
+                        // 1-4. 클릭한 탭에 해당하는 컨텐츠 활성화
+                        document.getElementById(tab.getAttribute("data-tab")).classList.add("active");
+                    });
+                });
+                console.log("2. 탭 이벤트 등록 종료");
+            }
+
+            function getFriendItem(){
+                axios.get(`/api/v1/friend?page=${friendPage}&size=${pageSize}`)
+                .then(res => {
+                    const data = res.data;
+                    const totalFriendCount = data.totalCount;
+                    const friendList = data.list;
+
+                    if(friendList.length === 0){
+                        friendScrollEvent = false;
+                        return;
+                    }
+
+                    updateTotalCount("friend-count", totalFriendCount);
+
+                    // 중복 제거 후 신규 데이터 추가
+                    const newFriendList = friendList.filter(item => !friendItem.some(existingItem => existingItem.id === item.id));
+                    friendItem.push(...newFriendList);
+                    appendFriendItem(newFriendList);
+
+                    friendPage++;
+                })
+                .catch(e => {
+                    console.error(e);
+                });
+            }
+
+            function getRequiredItem(){
+                axios.get(`/api/v1/friend/required-list?page=${requiredPage}&size=${pageSize}`)
+                .then(res => {
+                    const data = res.data;
+                    const totalRequiredCount = data.totalCount;
+                    const requiredList = data.list;
+                    if(requiredList.length === 0){
+                        requiredScrollEvent = false;
+                        return;
+                    }
+
+                    updateTotalCount("required-count", totalRequiredCount);
+
+                    // 중복 제거 후 신규 데이터 추가
+                    const newRequiredList = requiredList.filter(item => !requiredItem.some(existingItem => existingItem.id === item.id));
+                    requiredItem.push(...newRequiredList);
+                    // appendFriendItem(newFriendList);
+
+                    requiredPage++;
+                })
+                .catch(e => {
+                    console.error(e);
+                });
+            }
+
             function getRequestItem(){}
+
+            function updateTotalCount(id, count){
+                document.getElementById(id).innerText = count;
+            }
+
+            function appendFriendItem(items){
+                const friendList = document.getElementById("friendTab");
+                items.forEach(item => {
+                    friendList.appendChild(new FriendItem(item));
+                });
+            }
+
+            function appendRequiredItem(items){
+                const requiredList = document.getElementById("requestsTab");
+                items.forEach(item => {
+                    requiredList.appendChild(new RequestItem(item));
+                });
+            }
+
+            function appendRequestItem(items){
+                const requestList = document.getElementById("sentRequestsTab");
+                items.forEach(item => {
+                    requestList.appendChild(new RequestItem(item));
+                });
+            }
+
+            function addScrollEvent() {
+                console.log("3. 스크롤 이벤트 등록");
+                const friendTab = document.getElementById("friendTab");
+                const requiredTab = document.getElementById("requiredTab");
+                const requestTab = document.getElementById("requestTab");
+
+                friendTab.addEventListener("scroll", () => {
+                    if (!friendScrollEvent) return; // 이벤트가 등록되어있는지 확인
+
+                    if(hasThrottledFriend) return; // 스크롤 이벤트 쓰로틀링
+
+                    hasThrottledFriend = true;
+                    if(friendScrollTimer) {
+                        clearTimeout(friendScrollTimer);
+                    }
+                    friendScrollTimer = setTimeout(() => {
+                        hasThrottledFriend = false;
+                    }, 200);
+
+                    if (friendTab.scrollTop + friendTab.clientHeight >= friendTab.scrollHeight - 5) {
+                        console.log("친구 목록 스크롤 이벤트 발생");
+                        getFriendItem();
+                    }
+                });
+
+                requiredTab.addEventListener("scroll", () => {
+                    if(!requiredScrollEvent) return;
+
+                    if(hasThrottledRequired) return;
+
+                    hasThrottledRequired = true;
+                    if(requiredScrollTimer) {
+                        clearTimeout(requiredScrollTimer);
+                    }
+                    requiredScrollTimer = setTimeout(() => {
+                        hasThrottledRequired = false;
+                    }, 200);
+
+                    if (requiredTab.scrollTop + requiredTab.clientHeight >= requiredTab.scrollHeight - 5) {
+                        console.log("받은 요청 스크롤 이벤트 발생");
+                        getRequiredItem();
+                    }
+                });
+
+                requestTab.addEventListener("scroll", () => {
+                    if(!requestScrollEvent) return;
+
+                    if(hasThrottledRequest) return;
+
+                    hasThrottledRequest = true;
+                    if(requestScrollTimer) {
+                        clearTimeout(requestScrollTimer);
+                    }
+                    requestScrollTimer = setTimeout(() => {
+                        hasThrottledRequest = false;
+                    }, 200);
+
+                    if (requestTab.scrollTop + requestTab.clientHeight >= requestTab.scrollHeight - 5) {
+                        console.log("보낸 요청 스크롤 이벤트 발생");
+                        getRequestItem();
+                    }
+                });
+
+                console.log("3. 스크롤 이벤트 종료");
+            }
+
+            window.onload = function() {
+                // 1. 초기화
+                init();
+
+                // 2. 초기 데이터 로드
+                getFriendItem();
+                getRequestItem();
+                getRequiredItem();
+            }
         </script>
     </div>
 </body>

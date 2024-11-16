@@ -51,6 +51,27 @@ public class FriendRequestRepositoryCustomImpl implements FriendRequestRepositor
     }
 
     @Override
+    public Integer countFriendRequestListByUser(User requestUser, String search) {
+        QUser targetUser = QUser.user;
+        QFriendRequest qFriendRequest = QFriendRequest.friendRequest;
+
+        BooleanBuilder builder = new BooleanBuilder();
+        builder.and(qFriendRequest.requestUser.eq(requestUser));
+        builder.and(qFriendRequest.isAccepted.isNull());
+        if (search != null && !search.isEmpty()) {
+            builder.and(targetUser.nickName.contains(search));
+        }
+
+        JPAQuery<FriendRequest> query = queryFactory
+                .select(qFriendRequest)
+                .from(qFriendRequest)
+                .join(qFriendRequest.targetUser, targetUser)
+                .where(builder);
+
+        return query.fetch().size();
+    }
+
+    @Override
     public List<FriendRequest> findFriendRequestReceivedListByUser(User targetUser, Pageable pageable, String search) {
         QUser requestUser = QUser.user;
         QFriendRequest qFriendRequest = QFriendRequest.friendRequest;
@@ -76,6 +97,27 @@ public class FriendRequestRepositoryCustomImpl implements FriendRequestRepositor
 
         List<FriendRequest> list = query.fetch();
         return list;
+    }
+
+    @Override
+    public Integer countFriendRequestReceivedListByUser(User targetUser, String search) {
+        QUser requestUser = QUser.user;
+        QFriendRequest qFriendRequest = QFriendRequest.friendRequest;
+
+        BooleanBuilder builder = new BooleanBuilder();
+        builder.and(qFriendRequest.targetUser.eq(targetUser));
+        builder.and(qFriendRequest.isAccepted.isNull());
+        if (search != null && !search.isEmpty()) {
+            builder.and(requestUser.nickName.contains(search));
+        }
+
+        JPAQuery<FriendRequest> query = queryFactory
+                .select(qFriendRequest)
+                .from(qFriendRequest)
+                .join(qFriendRequest.requestUser, requestUser)
+                .where(builder);
+
+        return query.fetch().size();
     }
 
 }

@@ -15,4 +15,7 @@ public interface FriendRepository extends JpaRepository<Friend, Integer>, Friend
     // 친구 관계 삭제
     void deleteByUserOwnAndUserFriend(User userOwn, User userFriend);
 
+    // 친구 카운트
+    Integer countByUserOwn(User userOwn);
+
 }

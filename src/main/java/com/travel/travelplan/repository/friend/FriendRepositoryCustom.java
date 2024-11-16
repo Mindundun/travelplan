@@ -10,4 +10,6 @@ public interface FriendRepositoryCustom {
 
     List<User> findFriendListByUser(User user, Pageable pageable, String search);
 
+    Integer countFriendListByUser(User user, String search);
+
 }
